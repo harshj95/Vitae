@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.application.job.model.User" table="T_Users">
+
+		<id column="c_user_id" name="userId" type="java.lang.Integer">
+			<generator class="native" />
+		</id>
+		
+		<property column="c_user_email" name="email" type="java.lang.String"/>
+		<property column="c_user_name" name="userName" type="java.lang.String"/>
+		<property column="c_user_phone" name="phone" type="java.lang.String"/>
+		
+		<property name="verified" type="java.lang.Integer">
+			<column name="c_is_verified" not-null="false" default="1"/>
+		</property>
+		
+		<property name="emailVerified" type="java.lang.Integer">
+			<column name="c_is_email_verified" not-null="false" default="0"/>
+		</property>
+		
+		<property name="active" type="java.lang.Integer">
+			<column name="c_is_active" not-null="false" default="1"/>
+		</property>
+		
+		<property name="installed" type="java.lang.Integer">
+			<column name="c_is_installed" not-null="false" default="1"/>
+		</property>
+		
+		<property column="c_created" name="created" type="java.lang.Long"/>
+		<property column="c_modified" name="modified" type="java.lang.Long"/>
+		
+	</class>
+</hibernate-mapping>
