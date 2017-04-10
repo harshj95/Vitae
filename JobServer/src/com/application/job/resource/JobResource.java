@@ -107,7 +107,7 @@ public class JobResource extends BaseResource{
 	@POST
 	@Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String tfIdf(@FormParam("user_id") String userId, @FormParam("company") int company) throws JSONException
+	public String tfIdf(@FormParam("user_id") String userId) throws JSONException
 	{
 		JobDao jobDao = new JobDao();
 		BaseDao dao  = new BaseDao();
