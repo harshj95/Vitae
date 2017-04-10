@@ -24,22 +24,25 @@ public class User extends BaseEntity{
 	private int installed;
 	@Embedded
 	private List<Session> sessions;
+	@Embedded 
+	private List<Skill> skills;
 	
 	public User() {
 		super();
 	}
 
-	public User(String userName, String email, String password, String phone, List<Session> sessions) {
+	public User(String userName, String email, String password, String phone, int verified, int emailVerified,
+			int installed, List<Session> sessions, List<Skill> skills) {
 		super();
 		this.userName = userName;
 		this.email = email;
 		this.password = password;
 		this.phone = phone;
-		this.verified = 0;
-		this.emailVerified = 0;
-		this.installed = 1;
+		this.verified = verified;
+		this.emailVerified = emailVerified;
+		this.installed = installed;
 		this.sessions = sessions;
-		status = Constants.STATUS_ACTIVE;
+		this.skills = skills;
 	}
 
 	public String getUserName() {
@@ -106,11 +109,19 @@ public class User extends BaseEntity{
 		this.sessions = sessions;
 	}
 
+	public List<Skill> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<Skill> skills) {
+		this.skills = skills;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userName=" + userName + ", email=" + email + ", password=" + password + ", phone=" + phone
 				+ ", verified=" + verified + ", emailVerified=" + emailVerified + ", installed=" + installed
-				+ ", sessions=" + sessions + ", id=" + id + ", creationDate=" + creationDate + ", lastChange="
-				+ lastChange + ", status=" + status + "]";
+				+ ", sessions=" + sessions + ", skills=" + skills + ", id=" + id + ", creationDate=" + creationDate
+				+ ", lastChange=" + lastChange + ", status=" + status + "]";
 	}
 }

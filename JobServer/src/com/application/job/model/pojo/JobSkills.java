@@ -1,33 +1,42 @@
 package com.application.job.model.pojo;
 
-public class JobSkills {
+import java.io.Serializable;
+
+import com.application.job.model.entity.Skill;
+
+public class JobSkills implements Serializable{
 	
-	private int categoryId;
-	private int skillId;
-	private String skill;
+	private Skill skill;
+	private double tf;
 	
-	public JobSkills(int categoryId, int skillId, String skill) {
+	public JobSkills() {
 		super();
-		this.categoryId = categoryId;
-		this.skillId = skillId;
+	}
+
+	public JobSkills(Skill skill, double tf) {
+		super();
 		this.skill = skill;
+		this.tf = tf;
 	}
-	public int getCategoryId() {
-		return categoryId;
-	}
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
-	}
-	public int getSkillId() {
-		return skillId;
-	}
-	public void setSkillId(int skillId) {
-		this.skillId = skillId;
-	}
-	public String getSkill() {
+
+	public Skill getSkill() {
 		return skill;
 	}
-	public void setSkill(String skill) {
+
+	public void setSkill(Skill skill) {
 		this.skill = skill;
+	}
+
+	public double getTf() {
+		return tf;
+	}
+
+	public void setTf(double tf) {
+		this.tf = tf;
+	}
+
+	@Override
+	public String toString() {
+		return "JobSkills [skill=" + skill + ", tf=" + tf + "]";
 	}
 }

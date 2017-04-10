@@ -2,17 +2,17 @@ package com.application.job.util;
 
 import java.util.List;
 
-import com.application.job.model.pojo.JobSkills;
+import com.application.job.model.entity.Skill;
 
 public class TfIdf{
 	
-	public static int tfCalculator(List<JobSkills> skills, String skill)
+	public static int tfCalculator(List<Skill> skills, String skill)
 	{
 		int count = 0;
 		
-		for(JobSkills skillFound : skills)
+		for(Skill skillFound : skills)
 		{
-			if(skillFound.getSkill().equalsIgnoreCase(skill))
+			if(skillFound.getSkillName().equalsIgnoreCase(skill))
 			{
 				count++;
 			}
@@ -20,15 +20,15 @@ public class TfIdf{
 		return count;
 	}
 	
-	public static double idfCalculcator(List<List<JobSkills>> jobs, String skill)
+	public static double idfCalculcator(List<List<Skill>> jobs, String skill)
 	{
 		double count = 0;
 		
-		for(List<JobSkills> skills : jobs)
+		for(List<Skill> skills : jobs)
 		{
-			for(JobSkills skillFound : skills)
+			for(Skill skillFound : skills)
 			{
-				if(skillFound.getSkill().equalsIgnoreCase(skill))
+				if(skillFound.getSkillName().equalsIgnoreCase(skill))
 				{
 					count++;
 					break;
@@ -39,7 +39,7 @@ public class TfIdf{
 		return 1 + Math.log(jobs.size()/count);
 	}
 	
-	public static double tfIdfCalculator(String skill, List<JobSkills> skills, List<List<JobSkills>> jobs)
+	public static double tfIdfCalculator(String skill, List<Skill> skills, List<List<Skill>> jobs)
 	{
 		double tf, idf, tfIdf;
 		

@@ -4,16 +4,42 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
+import com.application.job.model.entity.Category;
+import com.application.job.model.entity.Field;
 import com.application.job.model.entity.Job;
+import com.application.job.model.entity.Skill;
 import com.application.job.model.pojo.JobSkills;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
 
 public class JobDao extends BaseDao{
+	
+	private final Datastore datastore;
+	private final BaseDao dao;
+	
+	public JobDao() {
+		datastore = DBUtil.instance().getDatabase();
+		dao = new BaseDao();
+	}
+	
+	public Job addToField(ObjectId fieldId, ObjectId categoryId)
+	{
+		Job job = null;
+		Query<Job> query = datastore.createQuery(Job.class).field("id").equal(fieldId);
+		Skill category = dao.get(Skill.class, categoryId);
+		UpdateOperations<Job> operations = datastore.createUpdateOperations(Job.class).addToSet("skills", category);
+		datastore.update(query, operations);
+		
+		return dao.get(Job.class, fieldId);
+	}
 	
 	/*public Job addJob(Job jobParam)
 	{
@@ -109,16 +135,16 @@ public class JobDao extends BaseDao{
 			error("JSON exception: " + e.getMessage());
 		}
 		return skills;
-	}
+	*/
 	
-	public List<List<JobSkills>> jobParser(List<Job> jobs)
+	public List<List<Skill>> jobParser(List<Job> jobs)
 	{
-		List<List<JobSkills>> jobSkills = new ArrayList<List<JobSkills>>();
+		List<List<Skill>> jobSkills = new ArrayList<List<Skill>>();
 		for(Job job : jobs)
 		{
-			jobSkills.add(skillsParser(job));
+			jobSkills.add(job.getSkills());
 		}
 		return jobSkills;
 	}
-*/
+
 }

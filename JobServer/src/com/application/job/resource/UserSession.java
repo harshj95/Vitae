@@ -9,9 +9,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.bson.types.ObjectId;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.model.entity.User;
 import com.application.job.controller.BaseDao;
+import com.application.job.controller.JobDao;
 import com.application.job.controller.SessionDao;
 import com.application.job.resource.UserSession;
 import com.application.job.util.CommonLib;
@@ -119,7 +123,7 @@ public class UserSession extends BaseResource {
     	
     	if (user == null)
     	{
-    		User userToAdd = new User(userName, email, password, phone, null);
+    		User userToAdd = new User(userName, email, password, phone, 0, 0, 1, null, null);
             
             user = dao.add(userToAdd);
     	}
@@ -211,4 +215,32 @@ public class UserSession extends BaseResource {
 
 		return CommonLib.getResponseString("Logged out successfully", "", CommonLib.RESPONSE_SUCCESS).toString();
 	}
+    
+    @Path("/skills")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId) throws JSONException
+	{
+		UserDao fieldDao = new UserDao();
+		JSONObject object = new JSONObject();
+		object.put("user", fieldDao.addToField(new ObjectId(jobId), new ObjectId(skillId)));
+		
+		return object.toString();
+	}
+    
+    @Path("/recommend")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+    public String recommend(@FormParam("user_id") String userId) throws JSONException
+    {
+    	UserDao dao = new UserDao();
+    	JSONObject object = new JSONObject();
+		object.put("recommended", dao.recommend(new ObjectId(userId)));
+		
+		return object.toString();
+    }
+    
+    
 }

@@ -1,8 +1,11 @@
 package com.application.job.controller;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
+import com.application.job.model.entity.Category;
 import com.application.job.model.entity.Field;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
@@ -35,6 +38,17 @@ public class FieldDao {
 		}
 		
 		return field;
+	}
+	
+	public Field addToField(ObjectId fieldId, ObjectId categoryId)
+	{
+		Field field = null;
+		Query<Field> query = datastore.createQuery(Field.class).field("id").equal(fieldId);
+		Category category = dao.get(Category.class, categoryId);
+		UpdateOperations<Field> operations = datastore.createUpdateOperations(Field.class).addToSet("categories", category);
+		datastore.update(query, operations);
+		
+		return dao.get(Field.class, fieldId);
 	}
 
 }

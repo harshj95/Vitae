@@ -14,6 +14,7 @@ public class Job extends BaseEntity {
 	
 	@Embedded
 	private Company company;
+	private String companyName;
 	@Embedded
 	private List<Skill> skills;
 	@Property("c_salary")
@@ -25,13 +26,14 @@ public class Job extends BaseEntity {
 		super();
 	}
 
-	public Job(Company company, List<Skill> skill, float salary, Location location) {
+	public Job(Company company, List<Skill> skill, float salary, Location location, String name) {
 		super();
 		this.company = company;
 		this.skills = skill;
 		this.salary = salary;
 		this.location = location;
 		status = Constants.STATUS_ACTIVE;
+		this.companyName = name;
 	}
 
 	public Company getCompany() {
