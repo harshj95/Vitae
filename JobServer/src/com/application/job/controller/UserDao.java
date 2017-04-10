@@ -1,120 +1,72 @@
 package com.application.job.controller;
 
-import java.util.Iterator;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Criteria;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import com.application.job.model.User;
+import com.application.job.model.entity.User;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
+import com.application.job.util.Constants;
+import com.application.job.controller.BaseDao;
 import com.application.job.controller.UserDao;
 
-public class UserDao extends BaseDao {
+public class UserDao {
 
-	public static final String LOGGER = "BaseDao.class";
-
+	private final Datastore datastore;
+	private final BaseDao dao;
+	
 	public UserDao() {
-		super(UserDao.LOGGER);
-	}
-
-	/**
-	 * Add user details to the DB for a newly signed up user. Updates User and
-	 * Session tables.
-	 */
-	public User addUserDetails(User userParam) {
-		User user;
-		Session session = null;
-		info("addUserDetails enter");
-		try {
-		
-			session = DBUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-			user = userParam;
-			session.save(user);
-
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
-			try {
-				throw new ZException("Error", e);
-			} catch (ZException e1) {
-				e1.printStackTrace();
-			}
-			error("Hibernate exception: " + e.getMessage());
-			user = null;
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
-		}
-		info("addUserDetails exit");
-		return user;
+		datastore = DBUtil.instance().getDatabase();
+		dao = new BaseDao();
 	}
 	
-	public User userActive(String accessToken) {
-
-		User user = null;
-		Session session = null;
-		info("userActive enter");
-		try {
+	public boolean updateField(ObjectId userId, String field, Object value)
+	{
+		boolean toReturn = false;
+		try
+		{
+			Query<User> query = datastore.createQuery(User.class).field("id").equal(userId);
+			UpdateOperations<User> operations = datastore.createUpdateOperations(User.class);
+			operations.disableValidation().set(field, value);
 			
-			session = DBUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-
-			String sql = "SELECT * FROM T_Users Where T_Users.c_user_id = (Select T_Session.c_user_id From T_Session WHERE c_access_token = :access_token)";
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(User.class);
-			query.setParameter("access_token", accessToken);
-			java.util.List results = (java.util.List) query.list();
-
-			if (results != null && results.size() > 0) {
-				user = (User) results.get(0);
-			}
-
-			transaction.commit();
-			session.close();
-		} catch (HibernateException e) {
+			UpdateResults result = datastore.update(query, operations);
+			toReturn = result.getUpdatedExisting();
+		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);
 			} catch (ZException e1) {
 				e1.printStackTrace();
+				return false;
 			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("userActive exit");
-		return user;
+		return toReturn;
 	}
-
-	public User updateUserDetails(User user) {
-
-		Session session = null;
-		info("updateUserDetails enter");
-		try {
-			session = DBUtil.getSessionFactory().openSession();
-			Transaction transaction = session.beginTransaction();
-			session.update(user);
-			transaction.commit();
-			session.close();
-		} catch (HibernateException e) {
-			user = null;
+	
+	public User userActive(String accessToken) 
+	{
+		User user = null;
+		try 
+		{
+			Query<User> query = datastore.createQuery(User.class);
+					
+			Criteria access = query.criteria("sessions.accessToken").equal(accessToken);
+			Criteria active = query.criteria("status").equal(Constants.STATUS_ACTIVE);
+			
+			query.and(access, active);
+			
+			user = query.get();
+		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);
 			} catch (ZException e1) {
 				e1.printStackTrace();
+				return null;
 			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("updateUserDetails exit");
 		return user;
 	}
 
@@ -127,77 +79,43 @@ public class UserDao extends BaseDao {
 	public User getUserDetails(String email, String accessToken) {
 
 		User user = null;
-		Session session = null;
-		info("getUserDetails enter");
-		try {
+		try 
+		{
+			Query<User> query = datastore.createQuery(User.class);
 			
-			session = DBUtil.getSessionFactory().openSession();
-			Transaction transaction = session.beginTransaction();
+			Criteria access = query.criteria("sessions.accessToken").equal(accessToken);
+			Criteria Email = query.criteria("c_email").equal(email);
 			
-			String sql = "SELECT * FROM T_Users WHERE c_user_email = :email_id && T_Users.c_user_id = (Select T_Session.c_user_id From T_Session WHERE c_access_token = :access_token)";
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(User.class);
-			query.setParameter("email_id", email);
-			query.setParameter("access_token", accessToken);
-			java.util.List results = (java.util.List) query.list();
-
-			for (Iterator iterator = ((java.util.List) results).iterator(); iterator.hasNext();) {
-				user = (User) iterator.next();
-			}
-
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
+			query.and(access, Email);
+			
+			user = query.get();
+		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);
 			} catch (ZException e1) {
 				e1.printStackTrace();
+				return null;
 			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("getUserDetails exit");
 		return user;
 	}
 	
 	public User getUserDetailsFromEmail(String email) {
 
 		User user = null;
-		Session session = null;
-		info("getUserDetails enter");
-		try {	
-
-			session = DBUtil.getSessionFactory().openSession();
-			Transaction transaction = session.beginTransaction();
-
-			String sql = "SELECT * FROM T_Users WHERE c_user_email = :email";
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(User.class);
-			query.setParameter("email", email);
-			java.util.List results = (java.util.List) query.list();
-
-			for (Iterator iterator = ((java.util.List) results).iterator(); iterator.hasNext();) {
-				user = (User) iterator.next();
-			}
-
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
+		try 
+		{	
+			Query<User> query = datastore.createQuery(User.class).field("c_email").equal(email);
+			
+			user = query.get();
+		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);
 			} catch (ZException e1) {
 				e1.printStackTrace();
+				return null;
 			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("getUserDetails exit");
 		return user;
 	}	
 }

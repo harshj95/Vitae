@@ -1,31 +1,33 @@
 package com.application.job.controller;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 
-import com.application.job.model.User;
+import com.application.job.model.entity.Session;
+import com.application.job.model.entity.User;
+import com.application.job.util.Constants;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
 
-public class UserSessionDao extends BaseDao {
-
-	public static final String LOGGER = "UserSessionDao.class";
-
-	public UserSessionDao() {
-		super(UserSessionDao.LOGGER);
+public class SessionDao extends BaseDao {
+	
+	private final Datastore datastore;
+	private final BaseDao dao;
+	
+	public SessionDao() {
+		datastore = DBUtil.instance().getDatabase();
+		dao = new BaseDao();
 	}
 
 	/**
 	 * Utility method to generate an accessToken.
 	 */
-	public Object[] generateAccessToken(String userName, int userId, String deviceId, String regId) {
+	/*public Object[] generateAccessToken(String userName, int userId, String deviceId, String regId) {
 		Object[] tokens = new Object[2];
 		String accessToken = "";
 		Transaction transaction = null;
@@ -86,46 +88,35 @@ public class UserSessionDao extends BaseDao {
 		tokens[0] = accessToken;
 		tokens[1] = retType;
 		return tokens;
-	}
+	}*/
 
-	public boolean addSession(int userId, String accessToken, String registrationId) {
-		Session session = null;
-		info("addSession enter");
-		try {
-			session = DBUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-			com.application.job.model.Session loginSession = new com.application.job.model.Session();
-			loginSession.setUserId(userId);
-
+	public boolean addSession(ObjectId userId, String accessToken, String pushId, String imei) {
+		boolean added;
+		try 
+		{
+			Session loginSession = new Session();
+			
 			loginSession.setAccessToken(accessToken);
-			loginSession.setPushId(registrationId);
-			loginSession.setCreated(System.currentTimeMillis());
-			loginSession.setModified(0);
+			loginSession.setPushId(pushId);
+			loginSession.setImei(imei);
+			
+			Query<User> query = datastore.createQuery(User.class).field("id").equal(userId);
+			UpdateOperations<User> operations = datastore.createUpdateOperations(User.class).addToSet("sessions", loginSession);
+			datastore.update(query, operations);
+			added = true;
 
-			session.save(loginSession);
-
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
-			try{
-				throw new ZException("Error",e);
-			}
-			catch(ZException e1){
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
 				e1.printStackTrace();
+				return false;
 			}
-			error("Hibernate exception: " + e.getMessage());
-			return false;
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("addSession exit");
-		return true;
+		return added;
 	}
 
-	public boolean updateRegistratonId(String pushId, String accessToken) {
+	/*public boolean updateRegistratonId(String pushId, String accessToken) {
 
 		Session session = null;
 
@@ -164,50 +155,57 @@ public class UserSessionDao extends BaseDao {
 		}
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Delete an accessToken for a particular user
 	 */
-	public boolean nullifyAccessToken(int userId, String accessToken) {
+	public boolean nullifyAccessToken(ObjectId userId, String accessToken) {
 
-		Session session = null;
-		info("nullifyAccessToken enter");
-
-		try {
-
-			session = DBUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-
-			String sql1 = "DELETE FROM T_Session WHERE c_access_token = :access_token && c_user_id = :user_id";
-			SQLQuery query1 = session.createSQLQuery(sql1);
-			query1.addEntity(com.application.job.model.Session.class);
-			query1.setParameter("access_token", accessToken);
-			query1.setParameter("user_id", userId);
-			int result = query1.executeUpdate();
+		User user = null;
+		boolean removed = false;
+		try 
+		{
+			Query<User> query = datastore.createQuery(User.class).field("id").equal(userId);
+			UpdateOperations<User> operations = datastore.createUpdateOperations(User.class);
+			user = query.get();
 			
-			transaction.commit();
-			session.close();
-			return true;
+			List<Session> sessions = user.getSessions();
+			
+			if(sessions.size()==1)
+			{
+				UpdateOperations<User> ops = datastore.createUpdateOperations(User.class);
+				ops.set("status", Constants.STATUS_INACTIVE);
+				datastore.update(query, ops);
+			}
+			
+			if(sessions!=null || !sessions.isEmpty())
+			{
+				for(Session sesh : sessions)
+				{
+					if(sesh.getAccessToken().equals(accessToken))
+					{
+						operations.disableValidation().removeAll("sessions", sesh);
+						datastore.update(query, operations);
+						UpdateResults result = datastore.update(query, operations);
+						removed = result.getUpdatedExisting();
+						break;
+					}
+				}
+			}
 
-		} catch (HibernateException e) {
-			try{
-				throw new ZException("Error",e);
-			}
-			catch(ZException e1){
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
 				e1.printStackTrace();
+				return false;
 			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
 		}
-		info("nullifyAccessToken exit");
-		return false;
+		return removed;
 	}
 
-	public ArrayList<String> getUserPushIds(int userId) {
+	/*public ArrayList<String> getUserPushIds(int userId) {
 		ArrayList<String> pushIds = new ArrayList<String>();
 		Session session = null;
 		info("getStore enter");
@@ -360,5 +358,5 @@ public class UserSessionDao extends BaseDao {
 		}
 		info("getStore exit");
 		return size;
-	}
+	}*/
 }

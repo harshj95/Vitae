@@ -8,15 +8,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.application.job.model.User;
-import com.application.job.controller.UserSessionDao;
+import org.apache.tomcat.util.codec.binary.Base64;
+
+import com.application.job.model.entity.User;
+import com.application.job.controller.BaseDao;
+import com.application.job.controller.SessionDao;
 import com.application.job.resource.UserSession;
 import com.application.job.util.CommonLib;
-
+import com.application.job.util.Constants;
+import com.application.job.util.CryptoHelper;
+import com.application.job.util.exception.ZException;
 import com.application.job.controller.UserDao;
 
 @Path("/auth")
-public class UserSession extends BaseResource{
+public class UserSession extends BaseResource {
 	
 	public static final String LOGGER = "UserSession.class";
 
@@ -42,26 +47,40 @@ public class UserSession extends BaseResource{
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-    public String login(@FormParam("email") String email, @FormParam("user_name") String userName, 
-    		@FormParam("access_token") String accessToken)
+    public String login (@FormParam("email") String email, @FormParam("user_name") String userName, 
+    		@FormParam("phone") String phone, @FormParam("password") String password)
     {
     	boolean sessionAdded = false;
     	
-    	if ((email == null || email.isEmpty()) || (accessToken == null || accessToken.isEmpty()))
+    	if ((email == null || email.isEmpty()) || (password == null || password.isEmpty()))
     	{
     		return CommonLib.getResponseString("Parameter error", "", CommonLib.RESPONSE_INVALID_PARAMS).toString();
     	}
     	
     	UserDao userDao = new UserDao();
+    	BaseDao dao = new BaseDao();
 		User user = null;
+		String accessToken;
 		
+		CryptoHelper cryptoHelper = new CryptoHelper();
+		if (password != null) {
+			try {
+				password = cryptoHelper.encrypt(password, null, null);
+			} catch (Exception e) {
+				try {
+					throw new ZException("Error", e);
+				} catch (ZException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	
     	if (userName != null && !userName.isEmpty())
     	{
 			user = userDao.getUserDetailsFromEmail(email);
 			if (user != null) 
 			{
-				if(user.getActive() == 1)
+				if(user.getStatus() == Constants.STATUS_ACTIVE)
 				{
 					return CommonLib.getResponseString("Account already exists.", "Invalid signup credentials",
 							CommonLib.RESPONSE_INVALID_PARAMS).toString();
@@ -69,11 +88,15 @@ public class UserSession extends BaseResource{
 				else
 				{
 					boolean session;
-					UserSessionDao userSessionDao = new UserSessionDao();
-					session = userSessionDao.addSession(user.getUserId(), accessToken, "");
-					user.setActive(1);
-					user.setModified(System.currentTimeMillis());
-					userDao.updateUserDetails(user);
+					SessionDao userSessionDao = new SessionDao();
+					
+					String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
+					+ String.valueOf((int) (Math.random() * 1000 * 1000));
+					byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
+					accessToken = new String(tokenByte);
+					
+					session = userSessionDao.addSession(user.getId(), accessToken, "","");
+					userDao.updateField(user.getId(), "status", Constants.STATUS_ACTIVE);
 					
 					if(session)
 					{						
@@ -86,33 +109,32 @@ public class UserSession extends BaseResource{
 				}
 			}
 		}
+		
+		String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
+		+ String.valueOf((int) (Math.random() * 1000 * 1000));
+		byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
+		accessToken = new String(tokenByte);
     	
     	user = userDao.getUserDetails(email, accessToken);
     	
-    	if (user == null || user.getUserId() <= 0)
+    	if (user == null)
     	{
-    		User userToAdd = new User();
-    		userToAdd.setEmail(email);		
-            userToAdd.setUserName(userName);
-            userToAdd.setActive(1);
-            userToAdd.setInstalled(1);
-            userToAdd.setCreated(System.currentTimeMillis());
-            userToAdd.setModified(0);
+    		User userToAdd = new User(userName, email, password, phone, null);
             
-            user = userDao.addUserDetails(userToAdd);
+            user = dao.add(userToAdd);
     	}
     	
-    	if (user == null || user.getUserId() <= 0)
+    	if (user == null || user.getId() == null)
     	{
     		return CommonLib.getResponseString("Error.", "Some error occured.", CommonLib.RESPONSE_INVALID_PARAMS).toString();    		
     	}
-    	UserSessionDao userSessionDao = new UserSessionDao();
+    	SessionDao userSessionDao = new SessionDao();
     	
     	int status = CommonLib.RESPONSE_SUCCESS;
     	
     	if(accessToken!= null && !accessToken.isEmpty())
     	{
-    		sessionAdded = userSessionDao.addSession(user.getUserId(), accessToken, "");
+    		sessionAdded = userSessionDao.addSession(user.getId(), accessToken, "", "");
     	}
     	
     	if(sessionAdded==true)
@@ -149,7 +171,7 @@ public class UserSession extends BaseResource{
 		
 		user = userDao.getUserDetails(email, accessToken);
 		
-		if(user==null || user.getUserId()<=0)
+		if(user==null || user.getId() == null)
 		{
 			return CommonLib.getResponseString("LoggedOut", "", CommonLib.RESPONSE_SUCCESS).toString();
 		}
@@ -176,12 +198,12 @@ public class UserSession extends BaseResource{
 		User user = userDao.userActive(accessToken);
 		boolean returnValue = false;
 
-		if (user != null && user.getUserId() > 0) {
-			UserSessionDao sessionDao = new UserSessionDao();
-			returnValue = sessionDao.nullifyAccessToken(user.getUserId(), accessToken);
-			user.setActive(0);
-			user.setModified(System.currentTimeMillis());
-			user = userDao.updateUserDetails(user);
+		if (user != null && user.getId()!= null) {
+			SessionDao sessionDao = new SessionDao();
+			returnValue = sessionDao.nullifyAccessToken(user.getId(), accessToken);
+			//user.setActive(0);
+			//user.setModified(System.currentTimeMillis());
+			//user = userDao.updateUserDetails(user);
 		}
 
 		if (accessToken != null && !returnValue)

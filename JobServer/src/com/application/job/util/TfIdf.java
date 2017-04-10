@@ -49,7 +49,4 @@ public class TfIdf{
 		
 		return tfIdf;
 	}
-	
-	
-
 }

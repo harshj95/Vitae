@@ -1,63 +1,53 @@
 package com.application.job.util;
 
-import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.boot.Metadata;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;	
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ReadPreference;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+import com.application.job.model.entity.BaseEntity;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
+import java.util.logging.Logger;
 
 public class DBUtil {
 	
-	/*
+	  public static final String DB_HOST = "127.0.0.1";
+	  public static final int DB_PORT = 27017;
+	  public static final String DB_NAME = "JobServer";
 
-	private static SessionFactory sessionFactory;
-//	private static ServiceRegistry serviceRegistry;
-	
-	private static SessionFactory configureSessionFactory()
-			throws HibernateException {
-//		 Configuration configuration = new Configuration();
-//		 configuration.configure();
-//		 serviceRegistry = new ServiceRegistryBuilder().applySettings(
-//		 configuration.getProperties()).buildServiceRegistry();
-//		 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-//		 return sessionFactory;
+	  private static final Logger LOG = Logger.getLogger(DBUtil.class.getName());
 
-		if (sessionFactory == null) {
-			Configuration configuration = new Configuration();
-			configuration.configure();
-			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+	  private static final DBUtil INSTANCE = new DBUtil();
 
-		}
-		return sessionFactory;
-	}
+	  private final Datastore datastore;
 
-	public static SessionFactory getSessionFactory() {
-		return configureSessionFactory();
+	  private DBUtil() {
+	    MongoClientOptions mongoOptions = MongoClientOptions.builder()
+		.socketTimeout(60000) // Wait 1m for a query to finish, https://jira.mongodb.org/browse/JAVA-1076
+		.connectTimeout(15000) // Try the initial connection for 15s, http://blog.mongolab.com/2013/10/do-you-want-a-timeout/
+		.maxConnectionIdleTime(600000) // Keep idle connections for 10m, so we discard failed connections quickly
+		.readPreference(ReadPreference.primaryPreferred()) // Read from the primary, if not available use a secondary
+		.build();
+	    MongoClient mongoClient;
+	    mongoClient = new MongoClient(new ServerAddress(DB_HOST, DB_PORT), mongoOptions);
 
-	}
-	*/
-	
-	private static final SessionFactory sessionFactory = buildSessionFactory();
+	    mongoClient.setWriteConcern(WriteConcern.SAFE);
+	    datastore = new Morphia().mapPackage(BaseEntity.class.getPackage().getName())
+		.createDatastore(mongoClient, DB_NAME);
+	    datastore.ensureIndexes();
+	    datastore.ensureCaps();
+	    LOG.info("Connection to database '" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + "' initialized");
+	  }
 
-    private static SessionFactory buildSessionFactory() {
-        try {
-            StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
-                    .configure("hibernate.cfg.xml").build();
-            Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
-            return metadata.getSessionFactoryBuilder().build();
+	  public static DBUtil instance() {
+	    return INSTANCE;
+	  }
 
-        } catch (HibernateException he) {
-            System.out.println("Session Factory creation failure");
-            throw he;
-        }
-    }
-
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
+	  // Creating the mongo connection is expensive - (re)use a singleton for performance reasons.
+	  // Both the underlying Java driver and Datastore are thread safe.
+	  public Datastore getDatabase() {
+	    return datastore;
+	  }
 }

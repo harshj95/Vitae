@@ -13,7 +13,7 @@ import com.application.zapplon.model.C_Product;
 import com.application.zapplon.model.OAuthSession;
 import com.application.zapplon.model.OfflineAddress;
 */
-import com.application.job.model.User;
+import com.application.job.model.entity.User;
 /*
 import com.application.zapplon.model.Voucher;
 import com.application.zapplon.model.intercity.TaxiBookings;
@@ -138,7 +138,7 @@ public class JsonUtil {
 
 		JSONObject userJson = new JSONObject();
 		//userJsonObject.put("email", user.getEmail());
-		userJsonObject.put("user_id", user.getUserId() + "");
+		userJsonObject.put("user_id", user.getId() + "");
 		//userJsonObject.put("is_verified", user.getIsVerified());
 		//userJsonObject.put("phone", user.getPhone());
 		//userJsonObject.put("contact", user.getPhone());

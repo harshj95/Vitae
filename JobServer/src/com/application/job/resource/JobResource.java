@@ -13,7 +13,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.controller.JobDao;
-import com.application.job.model.Job;
+import com.application.job.model.entity.Job;
 import com.application.job.util.CommonLib;
 import com.application.job.util.TfIdf;
 
@@ -26,7 +26,7 @@ public class JobResource extends BaseResource{
 		super(JobResource.LOGGER);
 	}
 	
-	@Path("/add")
+	/*@Path("/add")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
@@ -45,7 +45,7 @@ public class JobResource extends BaseResource{
 		
 		return CommonLib.getResponseString("Successfully logged in.", "", CommonLib.RESPONSE_SUCCESS).toString();
     }
-	
+	/*
 	@Path("/test")
 	@POST
 	@Produces("application/json")
@@ -97,4 +97,5 @@ public class JobResource extends BaseResource{
 			
 		return CommonLib.getResponseString(String.valueOf(ret), "", CommonLib.RESPONSE_SUCCESS).toString();
 	}
+	*/
 }

@@ -1,5 +1,8 @@
 package com.application.job.model.pojo;
 
+import org.mongodb.morphia.annotations.Embedded;
+
+@Embedded
 public class Location {
 
 	private double latitude, longitude;

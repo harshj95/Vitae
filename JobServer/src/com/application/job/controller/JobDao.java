@@ -7,25 +7,15 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
-import com.application.job.model.Job;
+import com.application.job.model.entity.Job;
 import com.application.job.model.pojo.JobSkills;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
 
 public class JobDao extends BaseDao{
 	
-	public static final String LOGGER = "BaseDao.class";
-
-	public JobDao() {
-		super(JobDao.LOGGER);
-	}
-	
-	public Job addJob(Job jobParam)
+	/*public Job addJob(Job jobParam)
 	{
 		Job job;
 		Session session = null;
@@ -130,9 +120,5 @@ public class JobDao extends BaseDao{
 		}
 		return jobSkills;
 	}
-	
-	
-	
-	
-
+*/
 }
