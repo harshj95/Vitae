@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.JobDao;
@@ -100,7 +101,7 @@ public class UserSession extends BaseResource {
 					accessToken = new String(tokenByte);
 					
 					session = userSessionDao.addSession(user.getId(), accessToken, "","");
-					userDao.updateField(user.getId(), "status", Constants.STATUS_ACTIVE);
+					dao.updateField(User.class, user.getId(), "status", Constants.STATUS_ACTIVE);
 					
 					if(session)
 					{						
@@ -222,25 +223,9 @@ public class UserSession extends BaseResource {
 	@Consumes("application/x-www-form-urlencoded")
 	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId) throws JSONException
 	{
-		UserDao fieldDao = new UserDao();
-		JSONObject object = new JSONObject();
-		object.put("user", fieldDao.addToField(new ObjectId(jobId), new ObjectId(skillId)));
+		BaseDao dao = new BaseDao();
+		User user = dao.addToSet(User.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
 		
-		return object.toString();
+		return new JSONObject().put("user", user).toString();
 	}
-    
-    @Path("/recommend")
-    @POST
-    @Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-    public String recommend(@FormParam("user_id") String userId) throws JSONException
-    {
-    	UserDao dao = new UserDao();
-    	JSONObject object = new JSONObject();
-		object.put("recommended", dao.recommend(new ObjectId(userId)));
-		
-		return object.toString();
-    }
-    
-    
 }

@@ -11,12 +11,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.bson.types.ObjectId;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.FieldDao;
 import com.application.job.controller.JobDao;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;

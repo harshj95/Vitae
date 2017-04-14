@@ -6,11 +6,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.bson.types.ObjectId;
-
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.SkillDao;
-import com.application.job.model.entity.Category;
 import com.application.job.model.entity.Skill;
 import com.application.job.util.CommonLib;
 
@@ -36,19 +32,5 @@ public class SkillResource extends BaseResource {
 		dao.add(skill);
 		
 		return CommonLib.getResponseString(skill.getSkillName()+" Added", "", CommonLib.RESPONSE_SUCCESS).toString();
-	}
-	
-	@Path("/category")
-    @POST
-    @Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-	public String addToCategory(@FormParam("category_id") String categoryId, @FormParam("skills_id") String skillId)
-	{
-		SkillDao skillDao = new SkillDao();
-		Category category = null;
-		
-		category = skillDao.addToCategory(new ObjectId(categoryId), new ObjectId(skillId));
-		
-		return category.toString();
 	}
 }

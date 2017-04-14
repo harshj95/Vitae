@@ -6,6 +6,8 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 
 import com.application.job.model.entity.BaseEntity;
 import com.application.job.util.DBUtil;
@@ -35,13 +37,40 @@ public class BaseDao {
 	    }
 	}
 	
-	public <E extends BaseEntity> E update (Class<E> clazz, ObjectId id, E entity)
+	public <E extends BaseEntity> boolean updateField(Class<E> clazz, ObjectId id, String field, Object value)
 	{
+		boolean toReturn = false;
 		try
 		{
 			Query<E> query = datastore.createQuery(clazz).field("id").equal(id);
-			datastore.updateFirst(query, entity, false);
-			return entity;
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz);
+			operations.disableValidation().set(field, value);
+			
+			UpdateResults result = datastore.update(query, operations);
+			toReturn = result.getUpdatedExisting();
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return false;
+			}
+		}
+		return toReturn;
+	}
+	
+	public <E extends BaseEntity, T extends BaseEntity> E addToSet(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, ObjectId valueId, String set)
+	{
+		E obj = null;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			T object = get(clazzz, valueId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, object);
+			
+			datastore.update(query, operations);
+			obj = get(clazz, setId); 
 		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);
@@ -49,7 +78,8 @@ public class BaseDao {
 				e1.printStackTrace();
 				return null;
 			}
-	    }
+		}
+		return obj;
 	}
 
 	public <E extends BaseEntity> E get(Class<E> clazz, final ObjectId id) 

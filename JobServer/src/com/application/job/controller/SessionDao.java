@@ -14,7 +14,7 @@ import com.application.job.util.Constants;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
 
-public class SessionDao extends BaseDao {
+public class SessionDao {
 	
 	private final Datastore datastore;
 	private final BaseDao dao;
@@ -174,9 +174,7 @@ public class SessionDao extends BaseDao {
 			
 			if(sessions.size()==1)
 			{
-				UpdateOperations<User> ops = datastore.createUpdateOperations(User.class);
-				ops.set("status", Constants.STATUS_INACTIVE);
-				datastore.update(query, ops);
+				dao.updateField(User.class, userId, "status", Constants.STATUS_INACTIVE);
 			}
 			
 			if(sessions!=null || !sessions.isEmpty())
