@@ -2,11 +2,15 @@ package com.application.job.model.entity;
 
 import java.util.List;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Property;
 
 import com.application.job.util.Constants;
+import com.application.job.util.JsonUtil;
+import com.application.job.util.exception.ZException;
 
 @Entity(value = "T_Users", noClassnameStored = true)
 public class User extends BaseEntity{	

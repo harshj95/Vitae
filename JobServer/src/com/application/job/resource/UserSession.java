@@ -10,18 +10,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.bson.types.ObjectId;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.JobDao;
 import com.application.job.controller.SessionDao;
 import com.application.job.resource.UserSession;
 import com.application.job.util.CommonLib;
 import com.application.job.util.Constants;
 import com.application.job.util.CryptoHelper;
+import com.application.job.util.JsonUtil;
 import com.application.job.util.exception.ZException;
 import com.application.job.controller.UserDao;
 
@@ -206,9 +204,6 @@ public class UserSession extends BaseResource {
 		if (user != null && user.getId()!= null) {
 			SessionDao sessionDao = new SessionDao();
 			returnValue = sessionDao.nullifyAccessToken(user.getId(), accessToken);
-			//user.setActive(0);
-			//user.setModified(System.currentTimeMillis());
-			//user = userDao.updateUserDetails(user);
 		}
 
 		if (accessToken != null && !returnValue)
@@ -221,11 +216,11 @@ public class UserSession extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId) throws JSONException
+	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId)
 	{
 		BaseDao dao = new BaseDao();
 		User user = dao.addToSet(User.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
 		
-		return new JSONObject().put("user", user).toString();
+		return JsonUtil.jsonObject(user).toString();
 	}
 }

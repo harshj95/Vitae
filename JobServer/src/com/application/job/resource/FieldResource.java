@@ -8,14 +8,14 @@ import javax.ws.rs.Produces;
 
 import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.FieldDao;
+import com.application.job.model.entity.Category;
 import com.application.job.model.entity.Field;
 import com.application.job.util.CommonLib;
+import com.application.job.util.JsonUtil;
 
-@Path("/fields")
+@Path("/field")
 public class FieldResource extends BaseResource {
 	
 	public static final String LOGGER = "FieldResource.class";
@@ -40,16 +40,17 @@ public class FieldResource extends BaseResource {
 		return CommonLib.getResponseString(field.getFieldName()+" Added", "", CommonLib.RESPONSE_SUCCESS).toString();
 	}
 	
-	@Path("/category")
+	@Path("/addCategory")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
 	public String addCategory(@FormParam("field_id") String fieldId, @FormParam("category_id") String categoryId) throws JSONException
 	{
-		FieldDao fieldDao = new FieldDao();
-		JSONObject object = new JSONObject();
-		object.put("field", fieldDao.addToField(new ObjectId(fieldId), new ObjectId(categoryId)));
+		BaseDao dao = new BaseDao();
+		Field field = null;
 		
-		return object.toString();
+		field = dao.addToSet(Field.class, Category.class, new ObjectId(fieldId), new ObjectId(categoryId), "categories");
+		
+		return JsonUtil.jsonObject(field).toString();
 	}
 }

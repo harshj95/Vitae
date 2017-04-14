@@ -12,7 +12,6 @@ import javax.ws.rs.Produces;
 
 import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.JobDao;
@@ -23,6 +22,7 @@ import com.application.job.model.pojo.JobModel;
 import com.application.job.model.pojo.JobSkills;
 import com.application.job.util.CommonLib;
 import com.application.job.util.JobCompare;
+import com.application.job.util.JsonUtil;
 import com.application.job.util.TfIdf;
 
 @Path("/job")
@@ -38,10 +38,9 @@ public class JobResource extends BaseResource{
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-    public String addJob(@FormParam("companyName") String companyname, @FormParam("salary") float salary) throws JSONException
+    public String addJob(@FormParam("companyName") String companyname, @FormParam("salary") float salary)
     {
 		BaseDao dao = new BaseDao();
-		Job job = null;
 		
 		Job jobToAdd = new Job(null, null, salary, null, companyname);
 		dao.add(jobToAdd);
@@ -53,13 +52,14 @@ public class JobResource extends BaseResource{
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addCategory(@FormParam("job_id") String jobId, @FormParam("skills_id") String skillId) throws JSONException
+	public String addSkill(@FormParam("job_id") String jobId, @FormParam("skill_id") String skillId)
 	{
-		JobDao fieldDao = new JobDao();
-		JSONObject object = new JSONObject();
-		object.put("job", fieldDao.addToField(new ObjectId(jobId), new ObjectId(skillId)));
+		BaseDao dao = new BaseDao();
+		Job job = null;
 		
-		return object.toString();
+		job = dao.addToSet(Job.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
+		
+		return JsonUtil.jsonObject(job).toString();
 	}
 	
 	@Path("/all")
@@ -68,38 +68,10 @@ public class JobResource extends BaseResource{
 	@Consumes("application/x-www-form-urlencoded")
 	public String all() throws JSONException
 	{
-//		JobDao fieldDao = new JobDao();
 		BaseDao dao = new BaseDao();
-		JSONObject object = new JSONObject();
-		object.put("job", dao.getAll(Job.class));
 		
-		
-		return object.toString();
+		return JsonUtil.objectArray(dao.getAll(Job.class)).toString();
 	}
-	/*
-	@Path("/test")
-	@POST
-	@Produces("application/json")
-	public String ret() throws JSONException
-	{
-		JSONArray array = new JSONArray();
-		JSONObject object = new JSONObject();
-		JSONObject object1 = new JSONObject();
-		
-		object.put("category_id", 101);
-		object.put("skill_id", 10101);
-		object.put("skill", "JSON");
-		
-		object1.put("category_id", 101);
-		object1.put("skill_id", 10102);
-		object1.put("skill", "TEST");
-		
-		array.put(object);
-		array.put(object1);
-		
-		return array.toString();f
-	}
-	*/
 	
 	@Path("tfIdf")
 	@POST
@@ -114,11 +86,7 @@ public class JobResource extends BaseResource{
 		
 		List<JobModel> JOBS = new ArrayList<JobModel>();
 		
-		
-		double[] tfs = new double[jobs.size()+1];
 		double idf;
-		String ret="";
-		
 		
 		List<Skill> skills = user.getSkills();
 		
@@ -169,11 +137,7 @@ public class JobResource extends BaseResource{
 		
 		Collections.sort(JOBS, new JobCompare());
 		
-		JSONObject object = new JSONObject();
-		object.put("jobs", JOBS);
-			
-		return object.toString();
-		//return CommonLib.getResponseString(object.toString(), "", CommonLib.RESPONSE_SUCCESS).toString();
+		return JsonUtil.objectArray(JOBS).toString();
 	}
 	
 }
