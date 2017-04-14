@@ -1,44 +1,19 @@
 package com.application.job.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
-
-import com.application.job.model.entity.Category;
-import com.application.job.model.entity.Field;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
-import com.application.job.model.pojo.JobSkills;
-import com.application.job.util.DBUtil;
-import com.application.job.util.exception.ZException;
 
 public class JobDao extends BaseDao{
 	
-	private final Datastore datastore;
+/*	private final Datastore datastore;
 	private final BaseDao dao;
-	
+*/	
 	public JobDao() {
-		datastore = DBUtil.instance().getDatabase();
-		dao = new BaseDao();
-	}
-	
-	public Job addToField(ObjectId fieldId, ObjectId categoryId)
-	{
-		Job job = null;
-		Query<Job> query = datastore.createQuery(Job.class).field("id").equal(fieldId);
-		Skill category = dao.get(Skill.class, categoryId);
-		UpdateOperations<Job> operations = datastore.createUpdateOperations(Job.class).addToSet("skills", category);
-		datastore.update(query, operations);
-		
-		return dao.get(Job.class, fieldId);
+		/*datastore = DBUtil.instance().getDatabase();
+		dao = new BaseDao()*/;
 	}
 	
 	/*public Job addJob(Job jobParam)

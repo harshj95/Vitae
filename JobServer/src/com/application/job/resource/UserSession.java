@@ -212,7 +212,7 @@ public class UserSession extends BaseResource {
 		return CommonLib.getResponseString("Logged out successfully", "", CommonLib.RESPONSE_SUCCESS).toString();
 	}
     
-    @Path("/skills")
+    @Path("/addSkill")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")

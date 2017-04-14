@@ -19,7 +19,7 @@ import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.JobModel;
-import com.application.job.model.pojo.JobSkills;
+import com.application.job.model.pojo.UserSkill;
 import com.application.job.util.CommonLib;
 import com.application.job.util.JobCompare;
 import com.application.job.util.JsonUtil;
@@ -48,7 +48,7 @@ public class JobResource extends BaseResource{
 		return CommonLib.getResponseString(jobToAdd.getId().toString() + "Added", "", CommonLib.RESPONSE_SUCCESS).toString();
     }
 	
-	@Path("/skills")
+	@Path("/addSkill")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
@@ -86,53 +86,52 @@ public class JobResource extends BaseResource{
 		
 		List<JobModel> JOBS = new ArrayList<JobModel>();
 		
-		double idf;
+		double idf = 0;
 		
 		List<Skill> skills = user.getSkills();
 		
-		for(Skill skill : skills)
+		for(Job job : jobs)
 		{
-			int i=0;
+			List<UserSkill> jobSkills = new ArrayList<UserSkill>();
+			JobModel JOB = new JobModel();
+			List<Skill> SKILLS = job.getSkills();
 			
-			for(Job job : jobs)
+			for(Skill skill : skills)
 			{
-				List<JobSkills> jobSkills = new ArrayList<JobSkills>();
-				List<Skill> SKILLS = job.getSkills();
-				JobModel JOB = new JobModel();
+				UserSkill jobSkill = new UserSkill();
+				jobSkill.setSkill(skill);
+				double tf = 0;
 				
-				
-				for(Skill SKILL : SKILLS)
+				/*for(Skill SKILL : SKILLS)
 				{
-					JobSkills jobSkill = new JobSkills();
-					jobSkill.setSkill(SKILL);
 					if(SKILL.getSkillName().equalsIgnoreCase(skill.getSkillName()))
 					{
-						jobSkill.setTf(1);
+						tf++;
 					}
-					else
-					{
-						jobSkill.setTf(0);
-					}
-					jobSkills.add(jobSkill);
-				}
-				JOB.setJob(job);
-				JOB.setSkills(jobSkills);
-				idf = TfIdf.idfCalculcator(jobDao.jobParser(jobs), skill.getSkillName());
-				JOB.setIdf(idf);
+				}*/
 				
-				JOBS.add(JOB);
+				jobSkill.setTf(TfIdf.tfCalculator(SKILLS, skill.getSkillName()));
+				idf = TfIdf.idfCalculcator(jobDao.jobParser(jobs), skill.getSkillName());
+				jobSkill.setIdf(TfIdf.idfCalculcator(jobDao.jobParser(jobs), skill.getSkillName()));
+				jobSkill.setTfIdf(TfIdf.tfIdfCalculator(skill.getSkillName(), SKILLS, jobDao.jobParser(jobs)));
+				jobSkills.add(jobSkill);
 			}
+			
+			JOB.setJob(job);
+			JOB.setSkills(jobSkills);
+			
+			JOBS.add(JOB);
 			
 			for(JobModel finalJob : JOBS)
 			{
-				double a = 0;
-				for(JobSkills JOBSKILL : finalJob.getSkills())
+				double a = 1;
+				for(UserSkill JOBSKILL : finalJob.getSkills())
 				{
-					a+=JOBSKILL.getTf()*finalJob.getIdf();
+					a*=JOBSKILL.getTfIdf();
 				}
-				finalJob.setFactor(a);
+				
+				finalJob.setFactor(a/finalJob.getJob().getSkills().size());
 			}
-			
 		}
 		
 		Collections.sort(JOBS, new JobCompare());

@@ -7,6 +7,11 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 public class Session implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1877935487600815919L;
+	
 	private String accessToken;
 	private String pushId;
 	private String imei;

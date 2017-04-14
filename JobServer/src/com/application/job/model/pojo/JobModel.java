@@ -7,20 +7,23 @@ import com.application.job.model.entity.Job;
 
 public class JobModel implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3594738763386930520L;
+	
 	private Job job;
-	private List<JobSkills> skills;
-	private double idf;
+	private List<UserSkill> userSkills;
 	private double factor;
 	
 	public JobModel() {
 		super();
 	}
 
-	public JobModel(Job job, List<JobSkills> skills, double idf, double factor) {
+	public JobModel(Job job, List<UserSkill> userSkills, double factor) {
 		super();
 		this.job = job;
-		this.skills = skills;
-		this.idf = idf;
+		this.userSkills = userSkills;
 		this.factor = factor;
 	}
 
@@ -32,20 +35,12 @@ public class JobModel implements Serializable{
 		this.job = job;
 	}
 
-	public List<JobSkills> getSkills() {
-		return skills;
+	public List<UserSkill> getSkills() {
+		return userSkills;
 	}
 
-	public void setSkills(List<JobSkills> skills) {
-		this.skills = skills;
-	}
-
-	public double getIdf() {
-		return idf;
-	}
-
-	public void setIdf(double idf) {
-		this.idf = idf;
+	public void setSkills(List<UserSkill> userSkills) {
+		this.userSkills = userSkills;
 	}
 
 	public double getFactor() {
@@ -58,6 +53,6 @@ public class JobModel implements Serializable{
 
 	@Override
 	public String toString() {
-		return "JobModel [job=" + job + ", skills=" + skills + ", idf=" + idf + ", factor=" + factor + "]";
+		return "JobModel [job=" + job + ", userSkills=" + userSkills + ", factor=" + factor + "]";
 	}
 }

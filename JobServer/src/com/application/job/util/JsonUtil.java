@@ -17,7 +17,7 @@ public class JsonUtil {
 	public static <E> JSONArray objectArray(List<E> objects) throws JSONException
     {
             if(objects.isEmpty() || objects==null)
-                    return new JSONArray();
+            	return new JSONArray();
 
             JSONArray objArray = new JSONArray();
 

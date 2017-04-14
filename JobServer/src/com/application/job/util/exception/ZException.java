@@ -1,11 +1,6 @@
 package com.application.job.util.exception;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.ArrayList;
-
-import com.application.job.util.CommonLib;
 /*import com.application.shopr.util.mailer.EmailModel;
 import com.application.shopr.util.mailer.EmailUtil;*/
 

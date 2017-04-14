@@ -42,7 +42,6 @@ public class FieldDao {
 	
 	public Field addToField(ObjectId fieldId, ObjectId categoryId)
 	{
-		Field field = null;
 		Query<Field> query = datastore.createQuery(Field.class).field("id").equal(fieldId);
 		Category category = dao.get(Category.class, categoryId);
 		UpdateOperations<Field> operations = datastore.createUpdateOperations(Field.class).addToSet("categories", category);

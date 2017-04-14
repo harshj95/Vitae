@@ -8,17 +8,14 @@ import com.application.job.model.entity.User;
 import com.application.job.util.DBUtil;
 import com.application.job.util.exception.ZException;
 import com.application.job.util.Constants;
-import com.application.job.controller.BaseDao;
 import com.application.job.controller.UserDao;
 
 public class UserDao {
 
 	private final Datastore datastore;
-	private final BaseDao dao;
 	
 	public UserDao() {
 		datastore = DBUtil.instance().getDatabase();
-		dao = new BaseDao();
 	}	
 	
 	public User userActive(String accessToken) 
