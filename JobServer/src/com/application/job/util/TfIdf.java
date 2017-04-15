@@ -38,7 +38,7 @@ public class TfIdf{
 		}
 		
 		if(count==0)
-			return 0;
+			return 1;
 		
 		return 1 + Math.log(jobs.size()/count);
 	}
