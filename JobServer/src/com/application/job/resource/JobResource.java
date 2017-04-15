@@ -14,7 +14,6 @@ import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.JobDao;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
@@ -79,7 +78,6 @@ public class JobResource extends BaseResource{
 	@Consumes("application/x-www-form-urlencoded")
 	public String tfIdf(@FormParam("user_id") String userId) throws JSONException
 	{
-		JobDao jobDao = new JobDao();
 		BaseDao dao  = new BaseDao();
 		List<Job> jobs = dao.getAll(Job.class);
 		User user = dao.get(User.class, new ObjectId(userId));
