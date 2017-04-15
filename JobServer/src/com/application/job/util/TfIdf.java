@@ -2,6 +2,7 @@ package com.application.job.util;
 
 import java.util.List;
 
+import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
 
 public class TfIdf{
@@ -20,13 +21,13 @@ public class TfIdf{
 		return count;
 	}
 	
-	public static double idfCalculcator(List<List<Skill>> jobs, String skill)
+	public static double idfCalculcator(List<Job> jobs, String skill)
 	{
 		double count = 0;
 		
-		for(List<Skill> skills : jobs)
+		for(Job job : jobs)
 		{
-			for(Skill skillFound : skills)
+			for(Skill skillFound : job.getSkills())
 			{
 				if(skillFound.getSkillName().equalsIgnoreCase(skill))
 				{
@@ -39,7 +40,7 @@ public class TfIdf{
 		return 1 + Math.log(jobs.size()/count);
 	}
 	
-	public static double tfIdfCalculator(String skill, List<Skill> skills, List<List<Skill>> jobs)
+	public static double tfIdfCalculator(String skill, List<Skill> skills, List<Job> jobs)
 	{
 		double tf, idf, tfIdf;
 		

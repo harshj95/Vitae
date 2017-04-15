@@ -102,18 +102,18 @@ public class JobResource extends BaseResource{
 				jobSkill.setSkill(skill);
 				double tf = 0;
 				
-				/*for(Skill SKILL : SKILLS)
+				for(Skill SKILL : SKILLS)
 				{
 					if(SKILL.getSkillName().equalsIgnoreCase(skill.getSkillName()))
 					{
 						tf++;
 					}
-				}*/
+				}
 				
-				jobSkill.setTf(TfIdf.tfCalculator(SKILLS, skill.getSkillName()));
-				idf = TfIdf.idfCalculcator(jobDao.jobParser(jobs), skill.getSkillName());
-				jobSkill.setIdf(TfIdf.idfCalculcator(jobDao.jobParser(jobs), skill.getSkillName()));
-				jobSkill.setTfIdf(TfIdf.tfIdfCalculator(skill.getSkillName(), SKILLS, jobDao.jobParser(jobs)));
+				jobSkill.setTf(tf);
+				idf = TfIdf.idfCalculcator(jobs, skill.getSkillName());
+				jobSkill.setIdf(idf);
+				jobSkill.setTfIdf(tf*idf);
 				jobSkills.add(jobSkill);
 			}
 			
@@ -124,10 +124,10 @@ public class JobResource extends BaseResource{
 			
 			for(JobModel finalJob : JOBS)
 			{
-				double a = 1;
+				double a = 0;
 				for(UserSkill JOBSKILL : finalJob.getSkills())
 				{
-					a*=JOBSKILL.getTfIdf();
+					a+=JOBSKILL.getTfIdf();
 				}
 				
 				finalJob.setFactor(a/finalJob.getJob().getSkills().size());
