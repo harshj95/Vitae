@@ -9,9 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.bson.types.ObjectId;
 
-import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.SessionDao;
@@ -19,7 +17,6 @@ import com.application.job.resource.UserSession;
 import com.application.job.util.CommonLib;
 import com.application.job.util.Constants;
 import com.application.job.util.CryptoHelper;
-import com.application.job.util.JsonUtil;
 import com.application.job.util.exception.ZException;
 import com.application.job.controller.UserDao;
 
@@ -122,7 +119,14 @@ public class UserSession extends BaseResource {
     	
     	if (user == null)
     	{
-    		User userToAdd = new User(userName, email, password, phone, 0, 0, 1, null, null);
+    		User userToAdd = new User();
+    		userToAdd.setUserName(userName);
+    		userToAdd.setEmail(email);
+    		userToAdd.setPassword(password);
+    		userToAdd.setPhone(phone);
+    		userToAdd.setVerified(0);
+    		userToAdd.setEmailVerified(0);
+    		userToAdd.setInstalled(1);
             
             user = dao.add(userToAdd);
     	}
@@ -210,17 +214,5 @@ public class UserSession extends BaseResource {
 			return CommonLib.getResponseString("Already logged out", "user already logged out", CommonLib.RESPONSE_INVALID_PARAMS).toString();
 
 		return CommonLib.getResponseString("Logged out successfully", "", CommonLib.RESPONSE_SUCCESS).toString();
-	}
-    
-    @Path("/addSkill")
-    @POST
-    @Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId)
-	{
-		BaseDao dao = new BaseDao();
-		User user = dao.addToSet(User.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
-		
-		return JsonUtil.jsonObject(user).toString();
 	}
 }

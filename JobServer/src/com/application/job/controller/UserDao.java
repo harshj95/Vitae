@@ -56,7 +56,7 @@ public class UserDao {
 			Query<User> query = datastore.createQuery(User.class);
 			
 			Criteria access = query.criteria("sessions.accessToken").equal(accessToken);
-			Criteria Email = query.criteria("c_email").equal(email);
+			Criteria Email = query.criteria("email").equal(email);
 			
 			query.and(access, Email);
 			
@@ -77,7 +77,7 @@ public class UserDao {
 		User user = null;
 		try 
 		{	
-			Query<User> query = datastore.createQuery(User.class).field("c_email").equal(email);
+			Query<User> query = datastore.createQuery(User.class).field("email").equal(email);
 			
 			user = query.get();
 		} catch (Exception e) {

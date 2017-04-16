@@ -4,24 +4,26 @@ import java.util.List;
 
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Property;
+
+import com.application.job.util.Constants;
 
 @Entity(value = "T_Categories", noClassnameStored = true)
 public class Category extends BaseEntity {
 	
-	@Property("c_category_name")
 	private String categoryName;
 	@Embedded
 	private List<Skill> skills;
 	
 	public Category() {
 		super();
+		status = Constants.STATUS_ACTIVE;
 	}
 
 	public Category(String categoryName, List<Skill> skills) {
 		super();
 		this.categoryName = categoryName;
 		this.skills = skills;
+		status = Constants.STATUS_ACTIVE;
 	}
 
 	public String getCategoryName() {

@@ -8,7 +8,7 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
 
-import com.application.job.model.entity.Session;
+import com.application.job.model.pojo.Session;
 import com.application.job.model.entity.User;
 import com.application.job.util.Constants;
 import com.application.job.util.DBUtil;

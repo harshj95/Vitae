@@ -14,6 +14,8 @@ import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.controller.BaseDao;
+import com.application.job.controller.IndustryDao;
+import com.application.job.model.entity.Company;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
@@ -33,18 +35,44 @@ public class JobResource extends BaseResource{
 		super(JobResource.LOGGER);
 	}
 	
-	@Path("/add")
+	@Path("/addJob")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-    public String addJob(@FormParam("companyName") String companyname, @FormParam("salary") float salary)
+    public String addJob(@FormParam("company_id") String companyId,@FormParam("industry_id") int industryId,
+    		@FormParam("designation") String designation, @FormParam("description") String description, 
+    		@FormParam("salary") float salary)
+    {
+		BaseDao dao = new BaseDao();
+		IndustryDao industryDao = new IndustryDao();
+		Company company = dao.get(Company.class, new ObjectId(companyId));
+		Job job = null;
+		
+		Job jobToAdd = new Job();
+		jobToAdd.setCompany(company);
+		jobToAdd.setIndustryId(industryId);
+		jobToAdd.setIndustryName(industryDao.getById(industryId).getIndustryName());
+		jobToAdd.setDesgination(designation);
+		jobToAdd.setDescription(description);
+		jobToAdd.setSalary(salary);
+		
+		job = dao.add(jobToAdd);
+		dao.addToSet(Company.class, Job.class, new ObjectId(companyId), job.getId(), "jobs");
+		
+		return CommonLib.getResponseString(jobToAdd.getId().toString() + "Added", "", CommonLib.RESPONSE_SUCCESS).toString();
+    }
+	
+	@Path("/add")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/json")
+    public String add(Job job)
     {
 		BaseDao dao = new BaseDao();
 		
-		Job jobToAdd = new Job(null, null, salary, null, companyname);
-		dao.add(jobToAdd);
+		dao.add(job);
 		
-		return CommonLib.getResponseString(jobToAdd.getId().toString() + "Added", "", CommonLib.RESPONSE_SUCCESS).toString();
+		return CommonLib.getResponseString(job.getId().toString() + "Added", "", CommonLib.RESPONSE_SUCCESS).toString();
     }
 	
 	@Path("/addSkill")
