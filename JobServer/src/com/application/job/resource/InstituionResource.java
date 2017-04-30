@@ -23,7 +23,7 @@ public class InstituionResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addInstitution(@FormParam("institution_name") String institutionName, @FormParam("level") String level)
+	public String addInstitution(@FormParam("institution_name") String institutionName, @FormParam("level") int level)
 	{
 		BaseDao dao = new BaseDao();
 		Institution institution = new Institution(institutionName, level);

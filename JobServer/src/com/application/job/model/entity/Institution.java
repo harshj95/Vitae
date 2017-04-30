@@ -8,14 +8,14 @@ import com.application.job.util.Constants;
 public class Institution extends BaseEntity {
 	
 	private String institutionName;
-	private String level;
+	private int level;
 	
 	public Institution() {
 		super();
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Institution(String institutionName, String level) {
+	public Institution(String institutionName, int level) {
 		super();
 		this.institutionName = institutionName;
 		this.level = level;
@@ -30,11 +30,11 @@ public class Institution extends BaseEntity {
 		this.institutionName = institutionName;
 	}
 
-	public String getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 
