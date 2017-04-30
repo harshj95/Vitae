@@ -37,6 +37,29 @@ public class BaseDao {
 	    }
 	}
 	
+	public <E extends BaseEntity> boolean update(Class<E> clazz, String search, Object searchValue, 
+			String field, Object value)
+	{
+		boolean toReturn = false;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field(search).equal(searchValue);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz);
+			operations.disableValidation().set(field, value);
+			
+			UpdateResults result = datastore.update(query, operations);
+			toReturn = result.getUpdatedExisting();
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return false;
+			}
+		}
+		return toReturn;
+	}
+	
 	public <E extends BaseEntity> boolean updateField(Class<E> clazz, ObjectId id, String field, Object value)
 	{
 		boolean toReturn = false;

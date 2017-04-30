@@ -24,6 +24,21 @@ public class IndustryResource extends BaseResource {
 		super(IndustryResource.LOGGER);
 	}
 	
+	@Path("/change")
+    @POST
+    @Produces("application/json")
+	public String sort() throws JSONException
+	{
+		BaseDao dao = new BaseDao();
+		
+		for(int i=19;i<=8;i--)
+		{
+			dao.update(Industry.class, "industryId", i, "industryId", i+1);
+		}
+		
+		return JsonUtil.objectArray(dao.getAll(Industry.class)).toString();
+	}
+	
 	@Path("/add")
     @POST
     @Produces("application/json")
