@@ -29,15 +29,14 @@ public class IndustryResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addIndustry(@FormParam("industry_id") int industryId)
+	public String addIndustry(@FormParam("industry_id") int industryId, @FormParam("industry_name") String industryName)
 	{
-		IndustryDao industryDao = new IndustryDao();
 		BaseDao dao = new BaseDao();
 		Industry industry = null;
 		
 		industry = new Industry();
 		industry.setIndustryId(industryId);
-		industry.setIndustryName(industryDao.industry(industryId));
+		industry.setIndustryName(industryName);
 		
 		dao.add(industry);
 		
