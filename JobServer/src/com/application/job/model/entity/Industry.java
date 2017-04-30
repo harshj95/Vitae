@@ -11,6 +11,7 @@ import com.application.job.util.Constants;
 public class Industry extends BaseEntity {
 	
 	private int industryId;
+	private String industryCode;
 	private String industryName;
 	@Embedded 
 	private List<Category> categories;
@@ -20,9 +21,10 @@ public class Industry extends BaseEntity {
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Industry(int industryId, String industryName, List<Category> categories) {
+	public Industry(int industryId, String industryCode, String industryName, List<Category> categories) {
 		super();
 		this.industryId = industryId;
+		this.industryCode = industryCode;
 		this.industryName = industryName;
 		this.categories = categories;
 		status = Constants.STATUS_ACTIVE;
@@ -34,6 +36,14 @@ public class Industry extends BaseEntity {
 
 	public void setIndustryId(int industryId) {
 		this.industryId = industryId;
+	}
+
+	public String getIndustryCode() {
+		return industryCode;
+	}
+
+	public void setIndustryCode(String industryCode) {
+		this.industryCode = industryCode;
 	}
 
 	public String getIndustryName() {
@@ -54,8 +64,8 @@ public class Industry extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Industry [industryId=" + industryId + ", industryName=" + industryName + ", categories=" + categories
-				+ ", id=" + id + ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status
-				+ "]";
+		return "Industry [industryId=" + industryId + ", industryCode=" + industryCode + ", industryName="
+				+ industryName + ", categories=" + categories + ", id=" + id + ", creationDate=" + creationDate
+				+ ", lastChange=" + lastChange + ", status=" + status + "]";
 	}
 }

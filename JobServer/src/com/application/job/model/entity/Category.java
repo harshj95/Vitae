@@ -10,6 +10,7 @@ import com.application.job.util.Constants;
 @Entity(value = "T_Categories", noClassnameStored = true)
 public class Category extends BaseEntity {
 	
+	private int categoryId;
 	private String categoryName;
 	@Embedded
 	private List<Skill> skills;
@@ -19,11 +20,20 @@ public class Category extends BaseEntity {
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Category(String categoryName, List<Skill> skills) {
+	public Category(int categoryId, String categoryName, List<Skill> skills) {
 		super();
+		this.categoryId = categoryId;
 		this.categoryName = categoryName;
 		this.skills = skills;
 		status = Constants.STATUS_ACTIVE;
+	}
+
+	public int getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(int categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getCategoryName() {
@@ -44,7 +54,7 @@ public class Category extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Category [categoryName=" + categoryName + ", skills=" + skills + ", id=" + id
-				+ ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status + "]";
+		return "Category [categoryId=" + categoryId + ", categoryName=" + categoryName + ", skills=" + skills + ", id="
+				+ id + ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status + "]";
 	}
 }

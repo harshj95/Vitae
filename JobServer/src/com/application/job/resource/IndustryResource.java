@@ -10,7 +10,6 @@ import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.controller.BaseDao;
-import com.application.job.controller.IndustryDao;
 import com.application.job.model.entity.Category;
 import com.application.job.model.entity.Industry;
 import com.application.job.util.CommonLib;
@@ -29,13 +28,15 @@ public class IndustryResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addIndustry(@FormParam("industry_id") int industryId, @FormParam("industry_name") String industryName)
+	public String addIndustry(@FormParam("industry_id") int industryId, @FormParam("industry_code") String industryCode,
+			@FormParam("industry_name") String industryName)
 	{
 		BaseDao dao = new BaseDao();
 		Industry industry = null;
 		
 		industry = new Industry();
 		industry.setIndustryId(industryId);
+		industry.setIndustryCode(industryCode);
 		industry.setIndustryName(industryName);
 		
 		dao.add(industry);

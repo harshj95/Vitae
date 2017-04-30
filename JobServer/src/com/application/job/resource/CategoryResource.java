@@ -27,11 +27,13 @@ public class CategoryResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-	public String addCategory(@FormParam("category_name") String categoryName)
+	public String addCategory(@FormParam("category_id") int categoryId, @FormParam("category_name") String categoryName)
 	{
 		BaseDao dao = new BaseDao();
 		
-		Category category = new Category(categoryName, null);
+		Category category = new Category();
+		category.setCategoryId(categoryId);
+		category.setCategoryName(categoryName);
 		
 		dao.add(category);
 		
