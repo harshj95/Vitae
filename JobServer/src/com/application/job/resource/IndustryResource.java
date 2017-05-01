@@ -30,14 +30,14 @@ public class IndustryResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/json")
-	public String sort(List<Industry> a) throws JSONException
+	public String sort(List<Industry> industries) throws JSONException
 	{
-		for(Industry A : a)
+		for(Industry industry : industries)
 		{
-			new BaseDao().add(A);
+			new BaseDao().add(industry);
 		}
 		
-		return JsonUtil.objectArray(a).toString();
+		return JsonUtil.objectArray(industries).toString();
 	}
 	
 	@Path("/add")

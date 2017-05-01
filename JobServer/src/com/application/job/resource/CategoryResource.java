@@ -1,5 +1,7 @@
 package com.application.job.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -7,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.bson.types.ObjectId;
+import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.controller.BaseDao;
 import com.application.job.model.entity.Category;
@@ -21,6 +24,20 @@ public class CategoryResource extends BaseResource {
 
 	public CategoryResource() {
 		super(CategoryResource.LOGGER);
+	}
+	
+	@Path("/change")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/json")
+	public String sort(List<Category> categories) throws JSONException
+	{
+		for(Category category : categories)
+		{
+			new BaseDao().add(category);
+		}
+		
+		return JsonUtil.objectArray(categories).toString();
 	}
 	
 	@Path("/add")
