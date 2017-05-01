@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.IndexOptions;
 
 import com.application.job.util.Constants;
 
 @Entity(value = "T_Industries", noClassnameStored = true)
 public class Industry extends BaseEntity {
 	
+	@Indexed(options = @IndexOptions(unique=true))
 	private int industryId;
 	private String industryCode;
 	private String industryName;
