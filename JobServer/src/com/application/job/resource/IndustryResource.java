@@ -1,5 +1,7 @@
 package com.application.job.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -27,16 +29,15 @@ public class IndustryResource extends BaseResource {
 	@Path("/change")
     @POST
     @Produces("application/json")
-	public String sort() throws JSONException
+	@Consumes("application/json")
+	public String sort(List<Industry> a) throws JSONException
 	{
-		BaseDao dao = new BaseDao();
-		
-		for(int i=19;i<=8;i--)
+		for(Industry A : a)
 		{
-			dao.update(Industry.class, "industryId", i, "industryId", i+1);
+			new BaseDao().add(A);
 		}
 		
-		return JsonUtil.objectArray(dao.getAll(Industry.class)).toString();
+		return JsonUtil.objectArray(a).toString();
 	}
 	
 	@Path("/add")
