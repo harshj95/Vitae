@@ -6,6 +6,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
 import com.application.job.model.pojo.Requirement;
+import com.application.job.model.pojo.SkillModel;
 import com.application.job.model.pojo.Experience;
 import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.Level;
@@ -15,15 +16,14 @@ import com.application.job.util.Constants;
 @Entity(value = "T_Jobs", noClassnameStored = true)
 public class Job extends BaseEntity {
 	
-	@Embedded
-	private Company company;
+	private String companyName;
 	@Embedded
 	private IndustryModel industry;
 	private String designation;
 	@Embedded
 	private Experience experience;
 	@Embedded
-	private List<Skill> skills;
+	private List<SkillModel> skills;
 	private String description;
 	@Embedded
 	private Level level;
@@ -38,10 +38,10 @@ public class Job extends BaseEntity {
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Job(Company company, IndustryModel industry, String designation, Experience experience, List<Skill> skills,
+	public Job(String companyName, IndustryModel industry, String designation, Experience experience, List<SkillModel> skills,
 			String description, Level level, Requirement requirement, Location location, float salary) {
 		super();
-		this.company = company;
+		this.companyName = companyName;
 		this.industry = industry;
 		this.designation = designation;
 		this.experience = experience;
@@ -54,12 +54,12 @@ public class Job extends BaseEntity {
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Company getCompany() {
-		return company;
+	public String getCompany() {
+		return companyName;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setCompany(String company) {
+		this.companyName = company;
 	}
 
 	public IndustryModel getIndustry() {
@@ -86,11 +86,11 @@ public class Job extends BaseEntity {
 		this.experience = experience;
 	}
 
-	public List<Skill> getSkills() {
+	public List<SkillModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<Skill> skills) {
+	public void setSkills(List<SkillModel> skills) {
 		this.skills = skills;
 	}
 
@@ -136,7 +136,7 @@ public class Job extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Job [company=" + company + ", industry=" + industry + ", designation=" + designation + ", experience="
+		return "Job [companyName=" + companyName + ", industry=" + industry + ", designation=" + designation + ", experience="
 				+ experience + ", skills=" + skills + ", description=" + description + ", level=" + level
 				+ ", requirement=" + requirement + ", location=" + location + ", salary=" + salary + ", id=" + id
 				+ ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status + "]";

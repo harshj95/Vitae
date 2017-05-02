@@ -12,9 +12,9 @@ import javax.ws.rs.QueryParam;
 import org.bson.types.ObjectId;
 
 import com.application.job.controller.BaseDao;
-import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.Education;
+import com.application.job.model.pojo.SkillModel;
 import com.application.job.util.JsonUtil;
 
 @Path("/user")
@@ -43,10 +43,10 @@ public class UserResource extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/json")
-	public String addSkills(List<Skill> skills, @QueryParam("user_id") String userId)
+	public String addSkills(List<SkillModel> skills, @QueryParam("user_id") String userId)
 	{
 		BaseDao dao = new BaseDao();
-		User user = dao.addSet(User.class, Skill.class, new ObjectId(userId), skills, "skills");
+		User user = dao.addObjectSet(User.class, SkillModel.class, new ObjectId(userId), skills, "skills");
 		
 		return JsonUtil.jsonObject(user).toString();
 	}

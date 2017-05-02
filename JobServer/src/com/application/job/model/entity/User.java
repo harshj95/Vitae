@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Entity;
 import com.application.job.model.pojo.Education;
 import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.Session;
+import com.application.job.model.pojo.SkillModel;
 import com.application.job.util.Constants;
 
 @Entity(value = "T_Users", noClassnameStored = true)
@@ -20,7 +21,7 @@ public class User extends BaseEntity{
 	@Embedded
 	private List<Education> education;
 	@Embedded 
-	private List<Skill> skills;
+	private List<SkillModel> skills;
 	@Embedded
 	private IndustryModel industry;
 	@Embedded
@@ -37,7 +38,7 @@ public class User extends BaseEntity{
 	}
 
 	public User(String userName, String email, String password, String phone, List<Education> education,
-			List<Skill> skills, IndustryModel industry, List<Session> sessions, List<Job> recommended, int verified,
+			List<SkillModel> skills, IndustryModel industry, List<Session> sessions, List<Job> recommended, int verified,
 			int emailVerified, int installed) {
 		super();
 		this.userName = userName;
@@ -94,11 +95,11 @@ public class User extends BaseEntity{
 		this.education = education;
 	}
 
-	public List<Skill> getSkills() {
+	public List<SkillModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<Skill> skills) {
+	public void setSkills(List<SkillModel> skills) {
 		this.skills = skills;
 	}
 

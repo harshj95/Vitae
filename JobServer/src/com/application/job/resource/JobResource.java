@@ -21,6 +21,7 @@ import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.JobModel;
+import com.application.job.model.pojo.SkillModel;
 import com.application.job.model.pojo.UserSkill;
 import com.application.job.util.CommonLib;
 import com.application.job.util.JobCompare;
@@ -50,7 +51,7 @@ public class JobResource extends BaseResource{
 		Job job = null;
 		
 		Job jobToAdd = new Job();
-		jobToAdd.setCompany(company);
+		jobToAdd.setCompany(company.getCompanyName());
 		jobToAdd.setIndustry(new IndustryModel(industryId, industryDao.getById(industryId).getIndustryName()));
 		jobToAdd.setDesignation(designation);
 		jobToAdd.setDescription(description);
@@ -84,7 +85,14 @@ public class JobResource extends BaseResource{
 		BaseDao dao = new BaseDao();
 		Job job = null;
 		
-		job = dao.addSet(Job.class, Skill.class, new ObjectId(jobId), skills, "skills");
+		List<SkillModel> Skills = new ArrayList<SkillModel>();
+		
+		for(Skill skill : skills)
+		{
+			Skills.add(new SkillModel(skill));
+		}
+		
+		job = dao.addObjectSet(Job.class, SkillModel.class, new ObjectId(jobId), Skills, "skills");
 		
 		return JsonUtil.jsonObject(job).toString();
 	}
@@ -114,21 +122,21 @@ public class JobResource extends BaseResource{
 		
 		double idf = 0;
 		
-		List<Skill> skills = user.getSkills();
+		List<SkillModel> skills = user.getSkills();
 		
 		for(Job job : jobs)
 		{
 			List<UserSkill> jobSkills = new ArrayList<UserSkill>();
 			JobModel JOB = new JobModel();
-			List<Skill> SKILLS = job.getSkills();
+			List<SkillModel> SKILLS = job.getSkills();
 			
-			for(Skill skill : skills)
+			for(SkillModel skill : skills)
 			{
 				UserSkill jobSkill = new UserSkill();
 				jobSkill.setSkill(skill);
 				double tf = 0;
 				
-				for(Skill SKILL : SKILLS)
+				for(SkillModel SKILL : SKILLS)
 				{
 					if(SKILL.getSkillName().equalsIgnoreCase(skill.getSkillName()))
 					{
