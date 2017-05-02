@@ -21,7 +21,7 @@ public class IndustryDao {
 		
 		try
 		{
-			Query<Industry> query = datastore.createQuery(Industry.class).field("industrydId").equal(industryId);
+			Query<Industry> query = datastore.createQuery(Industry.class).field("industryId").equal(industryId);
 			industry = query.get();
 		} catch (Exception e) {
 			try {
