@@ -1,7 +1,5 @@
 package com.application.job.model.entity;
 
-import java.util.List;
-
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
@@ -14,18 +12,19 @@ public class Skill extends BaseEntity {
 	private int skillId;
 	private String skillName;
 	@Embedded
-	private List<IndustryModel> industries;
+	private IndustryModel industry;
 
 	public Skill() {
 		super();
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Skill(int skillId, String skillName, List<IndustryModel> industries) {
+	public Skill(int skillId, String skillName, IndustryModel industry) {
 		super();
 		this.skillId = skillId;
 		this.skillName = skillName;
-		this.industries = industries;
+		this.industry = industry;
+		status = Constants.STATUS_ACTIVE;
 	}
 
 	public int getSkillId() {
@@ -44,17 +43,17 @@ public class Skill extends BaseEntity {
 		this.skillName = skillName;
 	}
 
-	public List<IndustryModel> getIndustries() {
-		return industries;
+	public IndustryModel getIndustry() {
+		return industry;
 	}
 
-	public void setIndustries(List<IndustryModel> industries) {
-		this.industries = industries;
+	public void setIndustry(IndustryModel industry) {
+		this.industry = industry;
 	}
 
 	@Override
 	public String toString() {
-		return "Skill [skillId=" + skillId + ", skillName=" + skillName + ", industries=" + industries + ", id=" + id
+		return "Skill [skillId=" + skillId + ", skillName=" + skillName + ", industry=" + industry + ", id=" + id
 				+ ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status + "]";
 	}
 }
