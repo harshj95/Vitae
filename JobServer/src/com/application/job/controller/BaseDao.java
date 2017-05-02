@@ -230,6 +230,24 @@ public class BaseDao {
 	    }
 	}
 	
+	public <E extends BaseEntity> List<E> getByField(Class<E> clazz, String field, Object value)
+	{
+		if((clazz==null))
+			return null;
+		
+		try
+		{
+			return datastore.createQuery(clazz).field(field).equal(value).asList();
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return new ArrayList<E>();
+			}
+	    }
+	}
+	
 	public <E extends BaseEntity> long count(Class<E> clazz) 
 	{
 		if (clazz==null) {

@@ -12,8 +12,10 @@ import javax.ws.rs.QueryParam;
 import org.bson.types.ObjectId;
 
 import com.application.job.controller.BaseDao;
+import com.application.job.controller.IndustryDao;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.Education;
+import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.SkillModel;
 import com.application.job.util.JsonUtil;
 
@@ -26,7 +28,7 @@ public class UserResource extends BaseResource {
 		super(UserResource.LOGGER);
 	}
 	
-	@Path("/addEducation")
+	@Path("/get")
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
@@ -37,6 +39,21 @@ public class UserResource extends BaseResource {
 		User user = dao.get(User.class, new ObjectId(userId));
 		
 		return JsonUtil.jsonObject(user).toString();
+	}
+	
+	@Path("/addIndustry")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+	public String addIndustry(@FormParam("user_id") String userId, @FormParam("indsutry_Id") int industryId)
+	{
+		BaseDao dao = new BaseDao();
+		
+		IndustryModel industryModel = new IndustryModel(industryId, new IndustryDao().getById(industryId).getIndustryName());
+		dao.addObject(User.class, IndustryModel.class, new ObjectId(userId), industryModel, "industry");
+		
+		return JsonUtil.jsonObject(dao.get(User.class, new ObjectId(userId))).toString();
+		
 	}
 	
 	@Path("/addSkill")

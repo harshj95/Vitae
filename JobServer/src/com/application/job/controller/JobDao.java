@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.application.job.model.entity.Job;
-import com.application.job.model.entity.Skill;
 import com.application.job.model.pojo.SkillModel;
 
 public class JobDao extends BaseDao{

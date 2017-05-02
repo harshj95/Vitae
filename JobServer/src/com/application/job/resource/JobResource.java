@@ -9,6 +9,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
@@ -80,7 +81,7 @@ public class JobResource extends BaseResource{
     @POST
     @Produces("application/json")
 	@Consumes("application/json")
-	public String addSkill(List<Skill> skills, @FormParam("job_id") String jobId)
+	public String addSkill(List<Skill> skills, @QueryParam("job_id") String jobId)
 	{
 		BaseDao dao = new BaseDao();
 		Job job = null;
@@ -115,8 +116,8 @@ public class JobResource extends BaseResource{
 	public String tfIdf(@FormParam("user_id") String userId) throws JSONException
 	{
 		BaseDao dao  = new BaseDao();
-		List<Job> jobs = dao.getAll(Job.class);
 		User user = dao.get(User.class, new ObjectId(userId));
+		List<Job> jobs = dao.getByField(Job.class, "industryId", user.getIndustry().getIndustryId());
 		
 		List<JobModel> JOBS = new ArrayList<JobModel>();
 		
