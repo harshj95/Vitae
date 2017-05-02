@@ -117,7 +117,7 @@ public class JobResource extends BaseResource{
 	{
 		BaseDao dao  = new BaseDao();
 		User user = dao.get(User.class, new ObjectId(userId));
-		List<Job> jobs = dao.getByField(Job.class, "industryId", user.getIndustry().getIndustryId());
+		List<Job> jobs = dao.getByField(Job.class, "industry.industryId", user.getIndustry().getIndustryId());
 		
 		List<JobModel> JOBS = new ArrayList<JobModel>();
 		
