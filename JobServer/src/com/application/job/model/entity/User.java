@@ -5,8 +5,8 @@ import java.util.List;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
+import com.application.job.model.pojo.Education;
 import com.application.job.model.pojo.IndustryModel;
-import com.application.job.model.pojo.Qualification;
 import com.application.job.model.pojo.Session;
 import com.application.job.util.Constants;
 
@@ -18,7 +18,7 @@ public class User extends BaseEntity{
 	private String password;
 	private String phone;
 	@Embedded
-	private List<Qualification> qualifications;
+	private List<Education> educations;
 	@Embedded 
 	private List<Skill> skills;
 	@Embedded
@@ -36,7 +36,7 @@ public class User extends BaseEntity{
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public User(String userName, String email, String password, String phone, List<Qualification> qualifications,
+	public User(String userName, String email, String password, String phone, List<Education> educations,
 			List<Skill> skills, IndustryModel industry, List<Session> sessions, List<Job> recommended, int verified,
 			int emailVerified, int installed) {
 		super();
@@ -44,7 +44,7 @@ public class User extends BaseEntity{
 		this.email = email;
 		this.password = password;
 		this.phone = phone;
-		this.qualifications = qualifications;
+		this.educations = educations;
 		this.skills = skills;
 		this.industry = industry;
 		this.sessions = sessions;
@@ -52,7 +52,6 @@ public class User extends BaseEntity{
 		this.verified = verified;
 		this.emailVerified = emailVerified;
 		this.installed = installed;
-		status = Constants.STATUS_ACTIVE;
 	}
 
 	public String getUserName() {
@@ -87,12 +86,12 @@ public class User extends BaseEntity{
 		this.phone = phone;
 	}
 
-	public List<Qualification> getQualifications() {
-		return qualifications;
+	public List<Education> getEducations() {
+		return educations;
 	}
 
-	public void setQualifications(List<Qualification> qualifications) {
-		this.qualifications = qualifications;
+	public void setEducations(List<Education> educations) {
+		this.educations = educations;
 	}
 
 	public List<Skill> getSkills() {
@@ -154,7 +153,7 @@ public class User extends BaseEntity{
 	@Override
 	public String toString() {
 		return "User [userName=" + userName + ", email=" + email + ", password=" + password + ", phone=" + phone
-				+ ", qualifications=" + qualifications + ", skills=" + skills + ", industry=" + industry + ", sessions="
+				+ ", educations=" + educations + ", skills=" + skills + ", industry=" + industry + ", sessions="
 				+ sessions + ", recommended=" + recommended + ", verified=" + verified + ", emailVerified="
 				+ emailVerified + ", installed=" + installed + ", id=" + id + ", creationDate=" + creationDate
 				+ ", lastChange=" + lastChange + ", status=" + status + "]";

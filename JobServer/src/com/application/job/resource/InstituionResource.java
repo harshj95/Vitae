@@ -26,7 +26,7 @@ public class InstituionResource extends BaseResource {
 	public String addInstitution(@FormParam("institution_name") String institutionName, @FormParam("level") int level)
 	{
 		BaseDao dao = new BaseDao();
-		Institution institution = new Institution(institutionName, level);
+		Institution institution = new Institution(institutionName, level, CommonLib.getInstitutionLevel(level));
 		
 		dao.add(institution);
 		

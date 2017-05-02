@@ -115,7 +115,7 @@ public class CommonLib {
 		return responseObject;
 	}
 	
-	public Level getLevel(int levelCode)
+	public static Level getLevel(int levelCode)
 	{
 		Level level = new Level();
 		
@@ -173,6 +173,26 @@ public class CommonLib {
 		}
 		
 		return level;
+	}
+	
+	public static String getInstitutionLevel(int levelId)
+	{
+		switch (levelId) {
+		case Constants.CODE_HIGH_SCHOOL:
+			return "High School";
+			
+		case Constants.CODE_BACHELORS:
+			return "Bachelor's";
+		
+		case Constants.CODE_MASTERS:
+			return "Master's";
+		
+		case Constants.CODE_PHD:
+			return "Ph.D";
+
+		default:
+			return "Bachelors";
+		}
 	}
 
 	public static String getUserKey() {

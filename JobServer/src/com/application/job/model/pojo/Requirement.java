@@ -6,16 +6,18 @@ import org.mongodb.morphia.annotations.Embedded;
 public class Requirement {
 	
 	private int degreeId;
-	private String degreeName;
+	private String degree;
+	private String course;
 	
 	public Requirement() {
 		super();
 	}
 
-	public Requirement(int degreeId, String degreeName) {
+	public Requirement(int degreeId, String degree, String course) {
 		super();
 		this.degreeId = degreeId;
-		this.degreeName = degreeName;
+		this.degree = degree;
+		this.course = course;
 	}
 
 	public int getDegreeId() {
@@ -26,11 +28,19 @@ public class Requirement {
 		this.degreeId = degreeId;
 	}
 
-	public String getDegreeName() {
-		return degreeName;
+	public String getDegree() {
+		return degree;
 	}
 
-	public void setDegreeName(String degreeName) {
-		this.degreeName = degreeName;
+	public void setDegree(String degree) {
+		this.degree = degree;
+	}
+
+	public String getCourse() {
+		return course;
+	}
+
+	public void setCourse(String course) {
+		this.course = course;
 	}
 }
