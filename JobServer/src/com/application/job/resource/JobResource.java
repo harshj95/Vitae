@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.IndustryDao;
+import com.application.job.controller.JobDao;
 import com.application.job.model.entity.Company;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
@@ -117,7 +118,7 @@ public class JobResource extends BaseResource{
 	{
 		BaseDao dao  = new BaseDao();
 		User user = dao.get(User.class, new ObjectId(userId));
-		List<Job> jobs = dao.getByField(Job.class, "industry.industryId", user.getIndustry().getIndustryId());
+		List<Job> jobs = new JobDao().getJobsById(user.getIndustry().getIndustryId());
 		
 		List<JobModel> JOBS = new ArrayList<JobModel>();
 		
