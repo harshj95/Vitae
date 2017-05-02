@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
+import com.application.job.model.pojo.SkillModel;
 
 public class JobDao extends BaseDao{
 	
@@ -112,9 +113,9 @@ public class JobDao extends BaseDao{
 		return skills;
 	*/
 	
-	public List<List<Skill>> jobParser(List<Job> jobs)
+	public List<List<SkillModel>> jobParser(List<Job> jobs)
 	{
-		List<List<Skill>> jobSkills = new ArrayList<List<Skill>>();
+		List<List<SkillModel>> jobSkills = new ArrayList<List<SkillModel>>();
 		for(Job job : jobs)
 		{
 			jobSkills.add(job.getSkills());

@@ -28,7 +28,7 @@ import com.application.job.util.JobCompare;
 import com.application.job.util.JsonUtil;
 import com.application.job.util.TfIdf;
 
-@Path("/job")
+@Path("/jobs")
 public class JobResource extends BaseResource{
 	
 	public static final String LOGGER = "UserSession.class";
