@@ -1,28 +1,26 @@
 package com.application.job.model.pojo;
 
-import java.util.List;
-
 import org.mongodb.morphia.annotations.Embedded;
-
-import com.application.job.model.entity.Institution;
 
 @Embedded
 public class Education {
 	
 	private int degreeId;
 	private String degreeName;
+	private String course;
 	@Embedded
-	private List<InstitutionModel> institutions;
+	private InstitutionModel institution;
 	
 	public Education() {
 		super();
 	}
 
-	public Education(int degreeId, String degreeName, List<InstitutionModel> institutions) {
+	public Education(int degreeId, String degreeName, String course, InstitutionModel institution) {
 		super();
 		this.degreeId = degreeId;
 		this.degreeName = degreeName;
-		this.institutions = institutions;
+		this.course = course;
+		this.institution = institution;
 	}
 
 	public int getDegreeId() {
@@ -41,11 +39,19 @@ public class Education {
 		this.degreeName = degreeName;
 	}
 
-	public List<InstitutionModel> getInstitutions() {
-		return institutions;
+	public String getCourse() {
+		return course;
 	}
 
-	public void setInstitutions(List<InstitutionModel> institutions) {
-		this.institutions = institutions;
+	public void setCourse(String course) {
+		this.course = course;
+	}
+
+	public InstitutionModel getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(InstitutionModel institution) {
+		this.institution = institution;
 	}
 }

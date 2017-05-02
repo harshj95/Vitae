@@ -1,22 +1,23 @@
 package com.application.job.model.pojo;
 
-import com.application.job.model.entity.Institution;
+import org.mongodb.morphia.annotations.Embedded;
 
+@Embedded
 public class InstitutionModel {
 	
 	private String institutionName;
-	private int levelCode;
-	private String level;
+	private int from;
+	private int to;
 	
 	public InstitutionModel() {
 		super();
 	}
 
-	public InstitutionModel(Institution institution) {
+	public InstitutionModel(String institutionName, int from, int to) {
 		super();
-		this.institutionName = institution.getInstitutionName();
-		this.levelCode = institution.getLevelCode();
-		this.level = institution.getLevel();
+		this.institutionName = institutionName;
+		this.from = from;
+		this.to = to;
 	}
 
 	public String getInstitutionName() {
@@ -27,19 +28,19 @@ public class InstitutionModel {
 		this.institutionName = institutionName;
 	}
 
-	public int getLevelCode() {
-		return levelCode;
+	public int getFrom() {
+		return from;
 	}
 
-	public void setLevelCode(int levelCode) {
-		this.levelCode = levelCode;
+	public void setFrom(int from) {
+		this.from = from;
 	}
 
-	public String getLevel() {
-		return level;
+	public int getTo() {
+		return to;
 	}
 
-	public void setLevel(String level) {
-		this.level = level;
+	public void setTo(int to) {
+		this.to = to;
 	}
 }

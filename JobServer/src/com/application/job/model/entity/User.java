@@ -18,7 +18,7 @@ public class User extends BaseEntity{
 	private String password;
 	private String phone;
 	@Embedded
-	private List<Education> educations;
+	private List<Education> education;
 	@Embedded 
 	private List<Skill> skills;
 	@Embedded
@@ -36,7 +36,7 @@ public class User extends BaseEntity{
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public User(String userName, String email, String password, String phone, List<Education> educations,
+	public User(String userName, String email, String password, String phone, List<Education> education,
 			List<Skill> skills, IndustryModel industry, List<Session> sessions, List<Job> recommended, int verified,
 			int emailVerified, int installed) {
 		super();
@@ -44,7 +44,7 @@ public class User extends BaseEntity{
 		this.email = email;
 		this.password = password;
 		this.phone = phone;
-		this.educations = educations;
+		this.education = education;
 		this.skills = skills;
 		this.industry = industry;
 		this.sessions = sessions;
@@ -86,12 +86,12 @@ public class User extends BaseEntity{
 		this.phone = phone;
 	}
 
-	public List<Education> getEducations() {
-		return educations;
+	public List<Education> getEducation() {
+		return education;
 	}
 
-	public void setEducations(List<Education> educations) {
-		this.educations = educations;
+	public void setEducation(List<Education> education) {
+		this.education = education;
 	}
 
 	public List<Skill> getSkills() {
@@ -153,7 +153,7 @@ public class User extends BaseEntity{
 	@Override
 	public String toString() {
 		return "User [userName=" + userName + ", email=" + email + ", password=" + password + ", phone=" + phone
-				+ ", educations=" + educations + ", skills=" + skills + ", industry=" + industry + ", sessions="
+				+ ", education=" + education + ", skills=" + skills + ", industry=" + industry + ", sessions="
 				+ sessions + ", recommended=" + recommended + ", verified=" + verified + ", emailVerified="
 				+ emailVerified + ", installed=" + installed + ", id=" + id + ", creationDate=" + creationDate
 				+ ", lastChange=" + lastChange + ", status=" + status + "]";

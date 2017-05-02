@@ -170,6 +170,28 @@ public class BaseDao {
 		}
 		return obj;
 	}
+	
+	public <E extends BaseEntity, T> E addObjectSet(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, List<T> objects, String set)
+	{
+		E obj = null;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, objects);
+			
+			datastore.update(query, operations);
+			obj = get(clazz, setId); 
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+		}
+		return obj;
+	}
 
 	public <E extends BaseEntity> E get(Class<E> clazz, final ObjectId id) 
 	{

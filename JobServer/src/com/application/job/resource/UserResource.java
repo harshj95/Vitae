@@ -1,5 +1,6 @@
 package com.application.job.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -13,6 +14,7 @@ import org.bson.types.ObjectId;
 import com.application.job.controller.BaseDao;
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
+import com.application.job.model.pojo.Education;
 import com.application.job.util.JsonUtil;
 
 @Path("/user")
@@ -32,6 +34,19 @@ public class UserResource extends BaseResource {
 	{
 		BaseDao dao = new BaseDao();
 		User user = dao.addSet(User.class, Skill.class, new ObjectId(userId), skills, "skills");
+		
+		return JsonUtil.jsonObject(user).toString();
+	}
+	
+	@Path("/addEducation")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/json")
+	public String addEducation(List<Education> education, @QueryParam("user_id") String userId)
+	{
+		BaseDao dao = new BaseDao();
+		
+		User user = dao.addObjectSet(User.class, Education.class, new ObjectId(userId), education, "education");
 		
 		return JsonUtil.jsonObject(user).toString();
 	}
