@@ -11,12 +11,12 @@ import com.application.job.model.entity.Institution;
 import com.application.job.util.CommonLib;
 
 @Path("/institution")
-public class InstituionResource extends BaseResource {
+public class InstitutionResource extends BaseResource {
 	
 	public static final String LOGGER = "InstituionResource.class";
 
-	public InstituionResource() {
-		super(InstituionResource.LOGGER);
+	public InstitutionResource() {
+		super(InstitutionResource.LOGGER);
 	}
 	
 	@Path("/add")

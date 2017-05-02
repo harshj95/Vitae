@@ -1,9 +1,9 @@
 package com.application.job.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,6 +24,19 @@ public class UserResource extends BaseResource {
 
 	public UserResource() {
 		super(UserResource.LOGGER);
+	}
+	
+	@Path("/addEducation")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+	public String getUser(@FormParam("user_id") String userId)
+	{
+		BaseDao dao = new BaseDao();
+		
+		User user = dao.get(User.class, new ObjectId(userId));
+		
+		return JsonUtil.jsonObject(user).toString();
 	}
 	
 	@Path("/addSkill")

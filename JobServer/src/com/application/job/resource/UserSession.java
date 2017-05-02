@@ -60,7 +60,7 @@ public class UserSession extends BaseResource {
     {
     	boolean sessionAdded = false;
     	
-    	if ((email == null || email.isEmpty()) || (password == null || password.isEmpty()))
+    	if ((email == null || email.isEmpty()))
     	{
     		return CommonLib.getResponseString("Parameter error", "", CommonLib.RESPONSE_INVALID_PARAMS).toString();
     	}
