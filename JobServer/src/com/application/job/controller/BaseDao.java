@@ -112,7 +112,7 @@ public class BaseDao {
 		try
 		{
 			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
-			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, object);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).set(set, object);
 			
 			datastore.update(query, operations);
 			added = true;
