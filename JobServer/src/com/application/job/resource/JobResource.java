@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONException;
@@ -37,6 +38,16 @@ public class JobResource extends BaseResource{
 
 	public JobResource() {
 		super(JobResource.LOGGER);
+	}
+	
+	@Path("/ret")
+	@POST
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes("application/x-www-form-urlencoded")
+	public String check(@FormParam("user_id") String userId)
+	{
+		BaseDao dao = new BaseDao();
+		return String.valueOf(dao.get(User.class, new ObjectId(userId)).getIndustry().getIndustryId());
 	}
 	
 	@Path("/addJob")
