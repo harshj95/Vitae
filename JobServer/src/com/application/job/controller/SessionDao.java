@@ -90,32 +90,6 @@ public class SessionDao {
 		return tokens;
 	}*/
 
-	public boolean addSession(ObjectId userId, String accessToken, String pushId, String imei) {
-		boolean added;
-		try 
-		{
-			Session loginSession = new Session();
-			
-			loginSession.setAccessToken(accessToken);
-			loginSession.setPushId(pushId);
-			loginSession.setImei(imei);
-			
-			Query<User> query = datastore.createQuery(User.class).field("id").equal(userId);
-			UpdateOperations<User> operations = datastore.createUpdateOperations(User.class).addToSet("sessions", loginSession);
-			datastore.update(query, operations);
-			added = true;
-
-		} catch (Exception e) {
-			try {
-				throw new ZException("Error", e);
-			} catch (ZException e1) {
-				e1.printStackTrace();
-				return false;
-			}
-		}
-		return added;
-	}
-
 	/*public boolean updateRegistratonId(String pushId, String accessToken) {
 
 		Session session = null;

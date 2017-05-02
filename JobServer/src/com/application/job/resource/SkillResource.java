@@ -27,7 +27,8 @@ public class SkillResource extends BaseResource {
 	{
 		BaseDao dao = new BaseDao();
 		Skill skill = null;
-		skill = new Skill(skillName);
+		skill = new Skill();
+		skill.setSkillName(skillName);
 		
 		dao.add(skill);
 		

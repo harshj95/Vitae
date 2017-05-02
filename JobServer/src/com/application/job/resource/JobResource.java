@@ -19,6 +19,7 @@ import com.application.job.model.entity.Company;
 import com.application.job.model.entity.Job;
 import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
+import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.JobModel;
 import com.application.job.model.pojo.UserSkill;
 import com.application.job.util.CommonLib;
@@ -50,9 +51,8 @@ public class JobResource extends BaseResource{
 		
 		Job jobToAdd = new Job();
 		jobToAdd.setCompany(company);
-		jobToAdd.setIndustryId(industryId);
-		jobToAdd.setIndustryName(industryDao.getById(industryId).getIndustryName());
-		jobToAdd.setDesgination(designation);
+		jobToAdd.setIndustry(new IndustryModel(industryId, industryDao.getById(industryId).getIndustryName()));
+		jobToAdd.setDesignation(designation);
 		jobToAdd.setDescription(description);
 		jobToAdd.setSalary(salary);
 		
@@ -78,13 +78,13 @@ public class JobResource extends BaseResource{
 	@Path("/addSkill")
     @POST
     @Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-	public String addSkill(@FormParam("job_id") String jobId, @FormParam("skill_id") String skillId)
+	@Consumes("application/json")
+	public String addSkill(List<Skill> skills, @FormParam("job_id") String jobId)
 	{
 		BaseDao dao = new BaseDao();
 		Job job = null;
 		
-		job = dao.addToSet(Job.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
+		job = dao.addSet(Job.class, Skill.class, new ObjectId(jobId), skills, "skills");
 		
 		return JsonUtil.jsonObject(job).toString();
 	}

@@ -13,6 +13,7 @@ public class Session implements Serializable {
 	private static final long serialVersionUID = 1877935487600815919L;
 	
 	private String accessToken;
+	private String loginType;
 	private String pushId;
 	private String imei;
 	
@@ -20,9 +21,10 @@ public class Session implements Serializable {
 		super();
 	}
 
-	public Session(String accessToken, String pushId, String imei) {
+	public Session(String accessToken, String loginType, String pushId, String imei) {
 		super();
 		this.accessToken = accessToken;
+		this.loginType = loginType;
 		this.pushId = pushId;
 		this.imei = imei;
 	}
@@ -33,6 +35,14 @@ public class Session implements Serializable {
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
+	}
+
+	public String getLoginType() {
+		return loginType;
+	}
+
+	public void setLoginType(String loginType) {
+		this.loginType = loginType;
 	}
 
 	public String getPushId() {

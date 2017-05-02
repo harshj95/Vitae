@@ -14,6 +14,7 @@ import org.codehaus.jettison.json.JSONException;
 import com.application.job.controller.BaseDao;
 import com.application.job.model.entity.Category;
 import com.application.job.model.entity.Industry;
+import com.application.job.model.entity.Skill;
 import com.application.job.util.CommonLib;
 import com.application.job.util.JsonUtil;
 
@@ -70,6 +71,20 @@ public class IndustryResource extends BaseResource {
 		Industry industry = null;
 		
 		industry = dao.addToSet(Industry.class, Category.class, new ObjectId(industry_id), new ObjectId(categoryId), "categories");
+		
+		return JsonUtil.jsonObject(industry).toString();
+	}
+	
+	@Path("/addSkill")
+    @POST
+    @Produces("application/json")
+	@Consumes("application/x-www-form-urlencoded")
+	public String addSkill(@FormParam("industry_id") String industryId, @FormParam("skill_id") String skillId)
+	{
+		BaseDao dao = new BaseDao();
+		Industry industry = null;
+		
+		industry = dao.addToSet(Industry.class, Skill.class, new ObjectId(industryId), new ObjectId(skillId), "skills");
 		
 		return JsonUtil.jsonObject(industry).toString();
 	}

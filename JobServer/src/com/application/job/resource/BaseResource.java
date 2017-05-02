@@ -2,8 +2,6 @@ package com.application.job.resource;
 
 import org.apache.log4j.BasicConfigurator;
 
-import com.application.job.util.CommonLib;
-
 /**
  * Base class for all resource classes. Includes Log4j logger.
  */
@@ -11,11 +9,8 @@ public class BaseResource {
 
 	// Logger object
 
-	@SuppressWarnings("unused")
 	public BaseResource(String classObj) {
-		if (CommonLib.ZLOG && classObj != null) {
 			BasicConfigurator.configure();
-		}
 	}
 
 	/*public String clientCheck(String clientId, String appType) {

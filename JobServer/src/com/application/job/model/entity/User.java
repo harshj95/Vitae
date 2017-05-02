@@ -5,6 +5,7 @@ import java.util.List;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
+import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.Qualification;
 import com.application.job.model.pojo.Session;
 import com.application.job.util.Constants;
@@ -20,7 +21,8 @@ public class User extends BaseEntity{
 	private List<Qualification> qualifications;
 	@Embedded 
 	private List<Skill> skills;
-	private int userType;
+	@Embedded
+	private IndustryModel industry;
 	@Embedded
 	private List<Session> sessions;
 	@Embedded
@@ -35,7 +37,7 @@ public class User extends BaseEntity{
 	}
 
 	public User(String userName, String email, String password, String phone, List<Qualification> qualifications,
-			List<Skill> skills, int userType, List<Session> sessions, List<Job> recommended, int verified,
+			List<Skill> skills, IndustryModel industry, List<Session> sessions, List<Job> recommended, int verified,
 			int emailVerified, int installed) {
 		super();
 		this.userName = userName;
@@ -44,7 +46,7 @@ public class User extends BaseEntity{
 		this.phone = phone;
 		this.qualifications = qualifications;
 		this.skills = skills;
-		this.userType = userType;
+		this.industry = industry;
 		this.sessions = sessions;
 		this.recommended = recommended;
 		this.verified = verified;
@@ -101,12 +103,12 @@ public class User extends BaseEntity{
 		this.skills = skills;
 	}
 
-	public int getUserType() {
-		return userType;
+	public IndustryModel getIndustry() {
+		return industry;
 	}
 
-	public void setUserType(int userType) {
-		this.userType = userType;
+	public void setIndustry(IndustryModel industry) {
+		this.industry = industry;
 	}
 
 	public List<Session> getSessions() {
@@ -152,7 +154,7 @@ public class User extends BaseEntity{
 	@Override
 	public String toString() {
 		return "User [userName=" + userName + ", email=" + email + ", password=" + password + ", phone=" + phone
-				+ ", qualifications=" + qualifications + ", skills=" + skills + ", userType=" + userType + ", sessions="
+				+ ", qualifications=" + qualifications + ", skills=" + skills + ", industry=" + industry + ", sessions="
 				+ sessions + ", recommended=" + recommended + ", verified=" + verified + ", emailVerified="
 				+ emailVerified + ", installed=" + installed + ", id=" + id + ", creationDate=" + creationDate
 				+ ", lastChange=" + lastChange + ", status=" + status + "]";

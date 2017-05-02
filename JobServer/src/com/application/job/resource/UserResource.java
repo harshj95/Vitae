@@ -1,10 +1,12 @@
 package com.application.job.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.bson.types.ObjectId;
 
@@ -25,11 +27,11 @@ public class UserResource extends BaseResource {
 	@Path("/addSkill")
     @POST
     @Produces("application/json")
-	@Consumes("application/x-www-form-urlencoded")
-	public String addCategory(@FormParam("user_id") String jobId, @FormParam("skills_id") String skillId)
+	@Consumes("application/json")
+	public String addSkills(List<Skill> skills, @QueryParam("user_id") String userId)
 	{
 		BaseDao dao = new BaseDao();
-		User user = dao.addToSet(User.class, Skill.class, new ObjectId(jobId), new ObjectId(skillId), "skills");
+		User user = dao.addSet(User.class, Skill.class, new ObjectId(userId), skills, "skills");
 		
 		return JsonUtil.jsonObject(user).toString();
 	}

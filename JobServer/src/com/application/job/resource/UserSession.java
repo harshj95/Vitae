@@ -1,22 +1,28 @@
 package com.application.job.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.codehaus.jettison.json.JSONException;
 
 import com.application.job.model.entity.User;
+import com.application.job.model.pojo.Experience;
+import com.application.job.model.pojo.Session;
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.SessionDao;
 import com.application.job.resource.UserSession;
 import com.application.job.util.CommonLib;
 import com.application.job.util.Constants;
 import com.application.job.util.CryptoHelper;
+import com.application.job.util.JsonUtil;
 import com.application.job.util.exception.ZException;
 import com.application.job.controller.UserDao;
 
@@ -30,11 +36,12 @@ public class UserSession extends BaseResource {
 	}
 	
 	@Path("/ret")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String gotIt()
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String gotIt(List<Experience> e, @QueryParam("bol") String b) throws JSONException
 	{
-		return "success";
+		return JsonUtil.objectArray(e).getJSONObject(1).put("test", b).toString();
 	}
 
 	/**
@@ -47,8 +54,9 @@ public class UserSession extends BaseResource {
     @POST
     @Produces("application/json")
 	@Consumes("application/x-www-form-urlencoded")
-    public String login (@FormParam("email") String email, @FormParam("user_name") String userName, 
-    		@FormParam("phone") String phone, @FormParam("password") String password)
+    public String login (@FormParam("email") String email, @FormParam("user_name") String userName,
+    		@FormParam("password") String password, @FormParam("access_token") String access_token, 
+    		@QueryParam("isLinkedLogin") boolean linkedLogin)
     {
     	boolean sessionAdded = false;
     	
@@ -61,6 +69,7 @@ public class UserSession extends BaseResource {
     	BaseDao dao = new BaseDao();
 		User user = null;
 		String accessToken;
+		Session toAdd = new Session();
 		
 		CryptoHelper cryptoHelper = new CryptoHelper();
 		if (password != null) {
@@ -88,14 +97,24 @@ public class UserSession extends BaseResource {
 				else
 				{
 					boolean session;
-					SessionDao userSessionDao = new SessionDao();
 					
-					String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
-					+ String.valueOf((int) (Math.random() * 1000 * 1000));
-					byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
-					accessToken = new String(tokenByte);
+					if(linkedLogin)
+					{
+						accessToken = access_token;
+						toAdd.setAccessToken(accessToken);
+						toAdd.setLoginType("LinkedIn");
+					}
+					else
+					{
+						String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
+						+ String.valueOf((int) (Math.random() * 1000 * 1000));
+						byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
+						accessToken = new String(tokenByte);
+						toAdd.setAccessToken(accessToken);
+						toAdd.setLoginType("Email");
+					}
 					
-					session = userSessionDao.addSession(user.getId(), accessToken, "","");
+					session = dao.addObject(User.class, Session.class, user.getId(), toAdd, "sessions");
 					dao.updateField(User.class, user.getId(), "status", Constants.STATUS_ACTIVE);
 					
 					if(session)
@@ -110,10 +129,21 @@ public class UserSession extends BaseResource {
 			}
 		}
 		
-		String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
-		+ String.valueOf((int) (Math.random() * 1000 * 1000));
-		byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
-		accessToken = new String(tokenByte);
+    	if(linkedLogin)
+		{
+			accessToken = access_token;
+			toAdd.setAccessToken(accessToken);
+			toAdd.setLoginType("LinkedIn");
+		}
+		else
+		{
+			String keySource = email + userName + password + String.valueOf(System.currentTimeMillis() * 1000)
+			+ String.valueOf((int) (Math.random() * 1000 * 1000));
+			byte[] tokenByte = Base64.encodeBase64(keySource.getBytes());
+			accessToken = new String(tokenByte);
+			toAdd.setAccessToken(accessToken);
+			toAdd.setLoginType("Email");
+		}
     	
     	user = userDao.getUserDetails(email, accessToken);
     	
@@ -123,7 +153,6 @@ public class UserSession extends BaseResource {
     		userToAdd.setUserName(userName);
     		userToAdd.setEmail(email);
     		userToAdd.setPassword(password);
-    		userToAdd.setPhone(phone);
     		userToAdd.setVerified(0);
     		userToAdd.setEmailVerified(0);
     		userToAdd.setInstalled(1);
@@ -135,13 +164,12 @@ public class UserSession extends BaseResource {
     	{
     		return CommonLib.getResponseString("Error.", "Some error occured.", CommonLib.RESPONSE_INVALID_PARAMS).toString();    		
     	}
-    	SessionDao userSessionDao = new SessionDao();
     	
     	int status = CommonLib.RESPONSE_SUCCESS;
     	
     	if(accessToken!= null && !accessToken.isEmpty())
     	{
-    		sessionAdded = userSessionDao.addSession(user.getId(), accessToken, "", "");
+    		sessionAdded = dao.addObject(User.class, Session.class, user.getId(), toAdd, "sessions");
     	}
     	
     	if(sessionAdded==true)

@@ -7,6 +7,8 @@ import org.mongodb.morphia.annotations.Entity;
 
 import com.application.job.model.pojo.Requirement;
 import com.application.job.model.pojo.Experience;
+import com.application.job.model.pojo.IndustryModel;
+import com.application.job.model.pojo.Level;
 import com.application.job.model.pojo.Location;
 import com.application.job.util.Constants;
 
@@ -15,16 +17,18 @@ public class Job extends BaseEntity {
 	
 	@Embedded
 	private Company company;
-	private int industryId;
-	private String industryName;
-	private String desgination;
+	@Embedded
+	private IndustryModel industry;
+	private String designation;
 	@Embedded
 	private Experience experience;
 	@Embedded
 	private List<Skill> skills;
 	private String description;
+	@Embedded
+	private Level level;
 	@Embedded 
-	Requirement requirement;
+	private Requirement requirement;
 	@Embedded
 	private Location location;
 	private float salary;
@@ -34,16 +38,16 @@ public class Job extends BaseEntity {
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Job(Company company, int industryId, String industryName, String desgination, Experience experience,
-			List<Skill> skills, String description, Requirement requirement, Location location, float salary) {
+	public Job(Company company, IndustryModel industry, String designation, Experience experience, List<Skill> skills,
+			String description, Level level, Requirement requirement, Location location, float salary) {
 		super();
 		this.company = company;
-		this.industryId = industryId;
-		this.industryName = industryName;
-		this.desgination = desgination;
+		this.industry = industry;
+		this.designation = designation;
 		this.experience = experience;
 		this.skills = skills;
 		this.description = description;
+		this.level = level;
 		this.requirement = requirement;
 		this.location = location;
 		this.salary = salary;
@@ -58,28 +62,20 @@ public class Job extends BaseEntity {
 		this.company = company;
 	}
 
-	public int getIndustryId() {
-		return industryId;
+	public IndustryModel getIndustry() {
+		return industry;
 	}
 
-	public void setIndustryId(int industryId) {
-		this.industryId = industryId;
+	public void setIndustry(IndustryModel industry) {
+		this.industry = industry;
 	}
 
-	public String getIndustryName() {
-		return industryName;
+	public String getDesignation() {
+		return designation;
 	}
 
-	public void setIndustryName(String industryName) {
-		this.industryName = industryName;
-	}
-
-	public String getDesgination() {
-		return desgination;
-	}
-
-	public void setDesgination(String desgination) {
-		this.desgination = desgination;
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 
 	public Experience getExperience() {
@@ -104,6 +100,14 @@ public class Job extends BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 
 	public Requirement getRequirement() {
@@ -132,10 +136,9 @@ public class Job extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Job [company=" + company + ", industryId=" + industryId + ", industryName=" + industryName
-				+ ", desgination=" + desgination + ", experience=" + experience + ", skills=" + skills
-				+ ", description=" + description + ", requirement=" + requirement + ", location=" + location
-				+ ", salary=" + salary + ", id=" + id + ", creationDate=" + creationDate + ", lastChange=" + lastChange
-				+ ", status=" + status + "]";
+		return "Job [company=" + company + ", industry=" + industry + ", designation=" + designation + ", experience="
+				+ experience + ", skills=" + skills + ", description=" + description + ", level=" + level
+				+ ", requirement=" + requirement + ", location=" + location + ", salary=" + salary + ", id=" + id
+				+ ", creationDate=" + creationDate + ", lastChange=" + lastChange + ", status=" + status + "]";
 	}
 }
