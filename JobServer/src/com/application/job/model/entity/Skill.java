@@ -1,9 +1,7 @@
 package com.application.job.model.entity;
 
-import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
-import com.application.job.model.pojo.IndustryModel;
 import com.application.job.util.Constants;
 
 @Entity(value = "T_Skills", noClassnameStored = true)
@@ -11,20 +9,18 @@ public class Skill extends BaseEntity {
 	
 	private int skillId;
 	private String skillName;
-	@Embedded
-	private IndustryModel industry;
+	private String industry;
 
 	public Skill() {
 		super();
 		status = Constants.STATUS_ACTIVE;
 	}
 
-	public Skill(int skillId, String skillName, IndustryModel industry) {
+	public Skill(int skillId, String skillName, String industry) {
 		super();
 		this.skillId = skillId;
 		this.skillName = skillName;
 		this.industry = industry;
-		status = Constants.STATUS_ACTIVE;
 	}
 
 	public int getSkillId() {
@@ -43,11 +39,11 @@ public class Skill extends BaseEntity {
 		this.skillName = skillName;
 	}
 
-	public IndustryModel getIndustry() {
+	public String getIndustry() {
 		return industry;
 	}
 
-	public void setIndustry(IndustryModel industry) {
+	public void setIndustry(String industry) {
 		this.industry = industry;
 	}
 
