@@ -20,7 +20,7 @@ public class CommonLib {
 	public static final int RESPONSE_INVALID_MERCHANT = 206;
 	public static final int RESPONSE_NO_ERROR_CODE = 0;
 
-	public static JSONObject getResponseString(String responseJson, String errorMessage, int status) {
+	public static JSONObject getResponseString(Object responseJson, String errorMessage, int status) {
 		JSONObject responseObject = new JSONObject();
 		switch (status) {
 		case RESPONSE_SUCCESS:

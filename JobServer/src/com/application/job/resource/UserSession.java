@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONException;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.Experience;
 import com.application.job.model.pojo.Session;
+import com.application.job.model.pojo.UserModel;
 import com.application.job.controller.BaseDao;
 import com.application.job.controller.SessionDao;
 import com.application.job.resource.UserSession;
@@ -116,10 +117,13 @@ public class UserSession extends BaseResource {
 					
 					session = dao.addObject(User.class, Session.class, user.getId(), toAdd, "sessions");
 					dao.updateField(User.class, user.getId(), "status", Constants.STATUS_ACTIVE);
+					int status = CommonLib.RESPONSE_SUCCESS;
 					
 					if(session)
 					{						
-						return CommonLib.getResponseString("Successfully logged in.", "", CommonLib.RESPONSE_SUCCESS).toString();    		
+						UserModel userModel = new UserModel(user.getId().toString(), user.getEmail(), 
+								user.getUserName(), user.getPhone(), toAdd.getAccessToken());
+			    		return CommonLib.getResponseString(JsonUtil.jsonObject(userModel), "", status).toString();    		
 			    	}
 			    	else
 			    	{
@@ -146,10 +150,10 @@ public class UserSession extends BaseResource {
 		}
     	
     	user = userDao.getUserDetails(email, accessToken);
-    	
+    	User userToAdd = new User();
     	if (user == null)
     	{
-    		User userToAdd = new User();
+    		
     		userToAdd.setUserName(userName);
     		userToAdd.setEmail(email);
     		userToAdd.setPassword(password);
@@ -174,7 +178,9 @@ public class UserSession extends BaseResource {
     	
     	if(sessionAdded==true)
     	{
-    		return CommonLib.getResponseString("Successfully logged in.", "", status).toString();    		
+    		UserModel userModel = new UserModel(userToAdd.getId().toString(), userToAdd.getEmail(), 
+    				userToAdd.getUserName(), userToAdd.getPhone(), toAdd.getAccessToken());
+    		return CommonLib.getResponseString(JsonUtil.jsonObject(userModel), "", status).toString();    		
     	}
     	else
     	{
