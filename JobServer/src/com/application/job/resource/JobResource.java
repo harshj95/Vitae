@@ -24,6 +24,7 @@ import com.application.job.model.entity.Skill;
 import com.application.job.model.entity.User;
 import com.application.job.model.pojo.IndustryModel;
 import com.application.job.model.pojo.JobModel;
+import com.application.job.model.pojo.JobPojo;
 import com.application.job.model.pojo.SkillModel;
 import com.application.job.model.pojo.UserSkill;
 import com.application.job.util.CommonLib;
@@ -183,7 +184,14 @@ public class JobResource extends BaseResource{
 		
 		Collections.sort(JOBS, new JobCompare());
 		
-		return JsonUtil.objectArray(JOBS).toString();
+		List<JobPojo> jobPojos = new ArrayList<JobPojo>();
+		
+		for(JobModel j : JOBS)
+		{
+			jobPojos.add(new JobPojo(dao.get(Job.class, j.getJob().getId())));
+		}
+		
+		return JsonUtil.objectArray(jobPojos).toString();
 	}
 	
 }
