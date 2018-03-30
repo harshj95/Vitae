@@ -37,6 +37,29 @@ public class BaseDao {
 	    }
 	}
 	
+	public <E extends BaseEntity> boolean update(Class<E> clazz, String search, Object searchValue, 
+			String field, Object value)
+	{
+		boolean toReturn = false;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field(search).equal(searchValue);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz);
+			operations.disableValidation().set(field, value);
+			
+			UpdateResults result = datastore.update(query, operations);
+			toReturn = result.getUpdatedExisting();
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return false;
+			}
+		}
+		return toReturn;
+	}
+	
 	public <E extends BaseEntity> boolean updateField(Class<E> clazz, ObjectId id, String field, Object value)
 	{
 		boolean toReturn = false;
@@ -81,6 +104,94 @@ public class BaseDao {
 		}
 		return obj;
 	}
+	
+	public <E extends BaseEntity, T> boolean addObject(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, T object, String set)
+	{
+		boolean added;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).set(set, object);
+			
+			datastore.update(query, operations);
+			added = true;
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				added = false;
+			}
+		}
+		return added;
+	}
+	
+	public <E extends BaseEntity, T extends BaseEntity> E addEntityObject(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, T object, String set)
+	{
+		E obj = null;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, object);
+			
+			datastore.update(query, operations);
+			obj = get(clazz, setId); 
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+		}
+		return obj;
+	}
+	
+	public <E extends BaseEntity, T extends BaseEntity> E addSet(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, List<T> objects, String set)
+	{
+		E obj = null;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, objects);
+			
+			datastore.update(query, operations);
+			obj = get(clazz, setId); 
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+		}
+		return obj;
+	}
+	
+	public <E extends BaseEntity, T> E addObjectSet(Class<E> clazz, Class<T> clazzz, 
+			ObjectId setId, List<T> objects, String set)
+	{
+		E obj = null;
+		try
+		{
+			Query<E> query = datastore.createQuery(clazz).field("id").equal(setId);
+			UpdateOperations<E> operations = datastore.createUpdateOperations(clazz).addToSet(set, objects);
+			
+			datastore.update(query, operations);
+			obj = get(clazz, setId); 
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+		}
+		return obj;
+	}
 
 	public <E extends BaseEntity> E get(Class<E> clazz, final ObjectId id) 
 	{
@@ -109,6 +220,24 @@ public class BaseDao {
 		try
 		{
 			return datastore.createQuery(clazz).asList();
+		} catch (Exception e) {
+			try {
+				throw new ZException("Error", e);
+			} catch (ZException e1) {
+				e1.printStackTrace();
+				return new ArrayList<E>();
+			}
+	    }
+	}
+	
+	public <E extends BaseEntity> List<E> getByField(Class<E> clazz, String field, Object value)
+	{
+		if((clazz==null))
+			return null;
+		
+		try
+		{
+			return datastore.createQuery(clazz).field(field).equal(value).asList();
 		} catch (Exception e) {
 			try {
 				throw new ZException("Error", e);

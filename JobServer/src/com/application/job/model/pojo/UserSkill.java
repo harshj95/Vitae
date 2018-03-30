@@ -2,8 +2,6 @@ package com.application.job.model.pojo;
 
 import java.io.Serializable;
 
-import com.application.job.model.entity.Skill;
-
 public class UserSkill implements Serializable{
 	
 	/**
@@ -11,7 +9,7 @@ public class UserSkill implements Serializable{
 	 */
 	private static final long serialVersionUID = -5925243555716615582L;
 	
-	private Skill skill;
+	private SkillModel skill;
 	private double tf;
 	private double idf;
 	private double tfIdf;
@@ -20,7 +18,7 @@ public class UserSkill implements Serializable{
 		super();
 	}
 
-	public UserSkill(Skill skill, double tf, double idf, double tfIdf) {
+	public UserSkill(SkillModel skill, double tf, double idf, double tfIdf) {
 		super();
 		this.skill = skill;
 		this.tf = tf;
@@ -28,11 +26,11 @@ public class UserSkill implements Serializable{
 		this.tfIdf = tfIdf;
 	}
 
-	public Skill getSkill() {
+	public SkillModel getSkill() {
 		return skill;
 	}
 
-	public void setSkill(Skill skill) {
+	public void setSkill(SkillModel skill) {
 		this.skill = skill;
 	}
 

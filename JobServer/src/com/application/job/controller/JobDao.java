@@ -3,123 +3,38 @@ package com.application.job.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+
 import com.application.job.model.entity.Job;
-import com.application.job.model.entity.Skill;
+import com.application.job.model.pojo.SkillModel;
+import com.application.job.util.DBUtil;
 
 public class JobDao extends BaseDao{
 	
-/*	private final Datastore datastore;
-	private final BaseDao dao;
-*/	
+	private final Datastore datastore;
+	
 	public JobDao() {
-		/*datastore = DBUtil.instance().getDatabase();
-		dao = new BaseDao()*/;
+		datastore = DBUtil.instance().getDatabase();
 	}
 	
-	/*public Job addJob(Job jobParam)
+	public List<Job> getJobsById(int industryId)
 	{
-		Job job;
-		Session session = null;
-		info("addUserDetails enter");
-		try {
+		Query<Job> query = datastore.createQuery(Job.class).field("industry.industryId").equal(industryId);
 		
-			session = DBUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-			job = jobParam;
-			session.save(job);
-
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
-			try {
-				throw new ZException("Error", e);
-			} catch (ZException e1) {
-				e1.printStackTrace();
-			}
-			error("Hibernate exception: " + e.getMessage());
-			job = null;
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
-		}
-		info("addUserDetails exit");
-		return job;
+		return query.asList();
 	}
 	
-	public List<Job> getProductById(int companyId)
-	{
-		Job product = null;
-		List<Job> jobs = new ArrayList();
-		Session session = null;
-		info("getProductById enter");
-		try
-		{
-			session = DBUtil.getSessionFactory().openSession();
-			Transaction transaction = session.beginTransaction();
-			
-			String sql = "SELECT * FROM T_Jobs Where T_Jobs.c_company_id= :company_id";
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(Job.class);
-			query.setParameter("company_id", companyId);
-			java.util.List results = (java.util.List) query.list();
-			
-			for (Iterator iterator = ((java.util.List) results).iterator(); iterator.hasNext();) {
-				product = ((Job) iterator.next());
-				jobs.add(product);
-			}
-			
-			transaction.commit();
-			session.close();
-
-		} catch (HibernateException e) {
-			try {
-				throw new ZException("Error", e);
-			} catch (ZException e1) {
-				e1.printStackTrace();
-			}
-			error("Hibernate exception: " + e.getMessage());
-		} finally {
-			if (session != null && session.isOpen())
-				session.close();
-		}
-		info("getUserDetails exit");
-		return jobs;
-	}
 	
-	public List<JobSkills> skillsParser(Job job)
-	{
-		List<JobSkills> skills = new ArrayList<JobSkills>();
-		try {
-			JSONArray skillsArray = new JSONArray(job.getSkillsArray());
-			
-			for(int i=0; i<skillsArray.length();i++)
-			{
-				JSONObject skillsObject = skillsArray.getJSONObject(i);
-				JobSkills skill = new JobSkills(skillsObject.getInt("category_id"), skillsObject.getInt("skill_id"), 
-						skillsObject.getString("skill"));
-				skills.add(skill);
-			}
-		} catch (JSONException e) {
-			try {
-				throw new ZException("Error", e);
-			} catch (ZException e1) {
-				e1.printStackTrace();
-			}
-			error("JSON exception: " + e.getMessage());
-		}
-		return skills;
-	*/
 	
-	public List<List<Skill>> jobParser(List<Job> jobs)
+	
+	public List<List<SkillModel>> jobParser(List<Job> jobs)
 	{
-		List<List<Skill>> jobSkills = new ArrayList<List<Skill>>();
+		List<List<SkillModel>> jobSkills = new ArrayList<List<SkillModel>>();
 		for(Job job : jobs)
 		{
 			jobSkills.add(job.getSkills());
 		}
 		return jobSkills;
 	}
-
 }

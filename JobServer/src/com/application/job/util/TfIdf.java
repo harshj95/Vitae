@@ -3,15 +3,15 @@ package com.application.job.util;
 import java.util.List;
 
 import com.application.job.model.entity.Job;
-import com.application.job.model.entity.Skill;
+import com.application.job.model.pojo.SkillModel;
 
 public class TfIdf{
 	
-	public static int tfCalculator(List<Skill> skills, String skill)
+	public static int tfCalculator(List<SkillModel> skills, String skill)
 	{
 		int count = 0;
 		
-		for(Skill skillFound : skills)
+		for(SkillModel skillFound : skills)
 		{
 			if(skillFound.getSkillName().equalsIgnoreCase(skill))
 			{
@@ -27,7 +27,7 @@ public class TfIdf{
 		
 		for(Job job : jobs)
 		{
-			for(Skill skillFound : job.getSkills())
+			for(SkillModel skillFound : job.getSkills())
 			{
 				if(skillFound.getSkillName().equalsIgnoreCase(skill))
 				{
@@ -43,7 +43,7 @@ public class TfIdf{
 		return 1 + Math.log(jobs.size()/count);
 	}
 	
-	public static double tfIdfCalculator(String skill, List<Skill> skills, List<Job> jobs)
+	public static double tfIdfCalculator(String skill, List<SkillModel> skills, List<Job> jobs)
 	{
 		double tf, idf, tfIdf;
 		

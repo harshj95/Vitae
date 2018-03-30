@@ -1,5 +1,10 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Built-By: akibl
 Build-Jdk: 1.8.0_111
+=======
+Built-By: harsh.jain
+Build-Jdk: 1.8.0_144
+>>>>>>> 58e089750855dd45a5cf70747142f7e011e6b918
 Created-By: Maven Integration for Eclipse
 
